@@ -1,0 +1,141 @@
+@import "inc/mixins";
+@import "inc/variables";
+
+// nav toggle button
+.nav-toggle-btn {
+  width: 44px;
+  height: 44px;
+  background-color: transparent;
+  border: 1px solid $primaryColor;
+  font-size: 1.55rem;
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  display: block;
+  line-height: 1;
+  text-align: center;
+  border-radius: 30px;
+  color: $primaryColor;
+  z-index: 999;
+
+  &:hover {
+    color: $primaryColor;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  @media (min-width: 768px) {
+    width: 54px;
+    height: 54px;
+    font-size: 2rem;
+    top: 30px;
+    right: 30px;
+  }
+
+  &.is-nav-hide {
+    .nav-close {
+      display: none;
+    }
+  }
+
+  &.is-nav-showing {
+    .nav-menu {
+      display: none;
+    }
+  }
+}
+
+.nav-overlay {
+  width: 100%;
+  height: 100vh;
+  background-color: rgba($defaultColor, .6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 888;
+  font-size: 0;
+  display: none;
+
+  &.is-nav-showing {
+    display: block;
+  }
+}
+
+.navigation-bar {
+  width: 320px;
+  height: 100vh;
+  background-color: $defaultColor;
+  position: fixed;
+  top: 0;
+  right: -500px;
+  z-index: 990;
+  padding: 150px 0 30px;
+  text-align: left;
+  // color: $defaultColor;
+  transition: all ease-in .15s;
+
+  &.is-nav-showing {
+    right: 0;
+  }
+
+  .navigation-bar-inner {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .navigation-bar-copyright {
+    opacity: .6;
+    color: #ffffff;
+  }
+
+  .navigation-bar-footer {
+    border-top: 1px solid rgba(#fff, .2);
+    padding: 15px 30px 0;
+  }
+}
+
+.navigation {
+  font-size: 1.4rem;
+  font-weight: 600;
+  list-style-type: none;
+  padding: 0 30px;
+  overflow-x: hidden;
+
+  li {
+    &:not(:last-child) {
+      margin-bottom: 30px;
+    }
+
+    a {
+      display: block;
+      // color: $secondaryColor;
+
+      .nav-icon,
+      .nav-text {
+        display: inline-block;
+        vertical-align: middle;
+      }
+
+      .nav-icon {
+        margin-right: 8px;
+        opacity: .7;
+      }
+
+      &:hover {
+        text-decoration: none;
+
+        .nav-icon {
+          opacity: .9;
+        }
+      }
+
+      &:focus {
+        text-decoration: none;
+      }
+    }
+  }
+}

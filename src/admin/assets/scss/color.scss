@@ -1,0 +1,129 @@
+/*-----------------------------------------------------------------------------------
+
+    Template Name: endless Admin
+    Template URI: themes.pixelstrap.com/endless
+    Description: This is Admin theme
+    Author: Pixelstrap
+    Author URI: https://themeforest.net/user/pixelstrap
+
+-----------------------------------------------------------------------------------
+*/
+
+@import "theme/variables";
+@import "style";
+html {
+	&.color-1 {
+		$primary-color: #4466f2;
+		$secondary-color: #1ea6ec;
+		$gradient-primary: linear-gradient($secondary-color, $primary-color);
+		$all-focus-outline-color: $primary-color;
+		$code-tag-color: $primary-color;
+		$list-group-active-bg-color: $primary-color;
+		$list-group-active-border-color: $primary-color;
+		$tour-color: $primary-color;
+		$main-header-right-toggle-color: $primary-color;
+		$main-header-right-nav-icon-color: $primary-color;
+		$light-body-bg-color: rgba($primary-color, 0.1);
+		$page-body-bg-color: $light-color;
+		$card-box-shadow: 1px 5px 24px 0 rgba($primary-color, 0.05);
+		$pre-tag-bg-color: rgba($primary-color, 0.05);
+
+		@import "style";
+
+	}
+	&.color-2 {
+		$primary-color: #0288d1;
+		$secondary-color: #26c6da;
+		$gradient-primary: linear-gradient($secondary-color, $primary-color);
+		$all-focus-outline-color: $primary-color;
+		$code-tag-color: $primary-color;
+		$list-group-active-bg-color: $primary-color;
+		$list-group-active-border-color: $primary-color;
+		$tour-color: $primary-color;
+		$main-header-right-toggle-color: $primary-color;
+		$main-header-right-nav-icon-color: $primary-color;
+		$light-body-bg-color: rgba($primary-color, 0.1);
+		$page-body-bg-color: $light-color;
+		$card-box-shadow: 1px 5px 24px 0 rgba($primary-color, 0.05);
+		$pre-tag-bg-color: rgba($primary-color, 0.05);
+
+		@import "style";
+
+	}
+	&.color-3 {
+		$primary-color: #8e24aa;
+		$secondary-color: #ff6e40;
+		$gradient-primary: linear-gradient($secondary-color, $primary-color);
+		$all-focus-outline-color: $primary-color;
+		$code-tag-color: $primary-color;
+		$list-group-active-bg-color: $primary-color;
+		$list-group-active-border-color: $primary-color;
+		$tour-color: $primary-color;
+		$main-header-right-toggle-color: $primary-color;
+		$main-header-right-nav-icon-color: $primary-color;
+		$light-body-bg-color: rgba($primary-color, 0.1);
+		$page-body-bg-color: $light-color;
+		$card-box-shadow: 1px 5px 24px 0 rgba($primary-color, 0.05);
+		$pre-tag-bg-color: rgba($primary-color, 0.05);
+
+		@import "style";
+
+	}
+	&.color-4 {
+		$primary-color: #4c2fbf;
+		$secondary-color: #2e9de4;
+		$gradient-primary: linear-gradient($secondary-color, $primary-color);
+		$all-focus-outline-color: $primary-color;
+		$code-tag-color: $primary-color;
+		$list-group-active-bg-color: $primary-color;
+		$list-group-active-border-color: $primary-color;
+		$tour-color: $primary-color;
+		$main-header-right-toggle-color: $primary-color;
+		$main-header-right-nav-icon-color: $primary-color;
+		$light-body-bg-color: rgba($primary-color, 0.1);
+		$page-body-bg-color: $light-color;
+		$card-box-shadow: 1px 5px 24px 0 rgba($primary-color, 0.05);
+		$pre-tag-bg-color: rgba($primary-color, 0.05);
+
+		@import "style";
+
+	}
+	&.color-5 {
+		$primary-color: #7c4dff;
+		$secondary-color: #7b1fa2;
+		$gradient-primary: linear-gradient($secondary-color, $primary-color);
+		$all-focus-outline-color: $primary-color;
+		$code-tag-color: $primary-color;
+		$list-group-active-bg-color: $primary-color;
+		$list-group-active-border-color: $primary-color;
+		$tour-color: $primary-color;
+		$main-header-right-toggle-color: $primary-color;
+		$main-header-right-nav-icon-color: $primary-color;
+		$light-body-bg-color: rgba($primary-color, 0.1);
+		$page-body-bg-color: $light-color;
+		$card-box-shadow: 1px 5px 24px 0 rgba($primary-color, 0.05);
+		$pre-tag-bg-color: rgba($primary-color, 0.05);
+
+		@import "style";
+
+	}
+	&.color-6 {
+		$primary-color: #3949ab;
+		$secondary-color: #4fc3f7;
+		$gradient-primary: linear-gradient($secondary-color, $primary-color);
+		$all-focus-outline-color: $primary-color;
+		$code-tag-color: $primary-color;
+		$list-group-active-bg-color: $primary-color;
+		$list-group-active-border-color: $primary-color;
+		$tour-color: $primary-color;
+		$main-header-right-toggle-color: $primary-color;
+		$main-header-right-nav-icon-color: $primary-color;
+		$light-body-bg-color: rgba($primary-color, 0.1);
+		$page-body-bg-color: $light-color;
+		$card-box-shadow: 1px 5px 24px 0 rgba($primary-color, 0.05);
+		$pre-tag-bg-color: rgba($primary-color, 0.05);
+
+		@import "style";
+
+	}
+}

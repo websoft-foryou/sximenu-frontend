@@ -1,0 +1,173 @@
+@import "inc/mixins";
+@import "inc/variables";
+
+.menu-cat-nav {
+  padding-top: 30px;
+  text-align: center;
+  margin-bottom: 25px;
+  position: fixed;
+  bottom: 10px;
+  z-index: 777;
+  width: 660px;
+  left: 50%;
+  margin-left: -330px;
+
+  .cat-nav-item {
+    background-color: transparent;
+    color: #ffffff;
+    // border-radius: 50%;
+    opacity: .7;
+
+    .ratio-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cat-icon,
+    .cat-name {
+      display: block;
+    }
+
+    .cat-icon {
+      font-size: 1.67rem;
+    }
+
+    .cat-name {
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .03rem;
+      font-weight: 600;
+      margin-top: 7px;
+    }
+
+    @media (max-width: 1024px) {
+      .cat-name {
+        display: none;
+      }
+    }
+    @media (max-width: 667px) {
+      .cat-icon {
+        font-size: 1.2rem;
+        margin-top: -2px;
+      }
+    }
+  }
+
+  .swiper-container {
+    padding: 100px 0 25px;
+
+    @media (max-width: 1024px) {
+      padding: 50px 0 13px;
+    }
+  }
+
+  .swiper-slide {
+    transform: translateY(25px);
+
+    &:not(.swiper-slide-active),
+    &:not(.swiper-slide-prev),
+    &:not(.swiper-slide-next) {
+      // transition: all ease-in .2s;
+    }
+
+    &.swiper-slide-active {
+      transform: translateY(-100px);
+
+      .cat-nav-item {
+        color: $primaryColor;
+        opacity: 1;
+      }
+    }
+
+    &.swiper-slide-prev,
+    &.swiper-slide-next {
+      transform: translateY(-50px);
+    }
+
+    @media (max-width: 1024px) {
+      transform: translateY(13px);
+
+      &.swiper-slide-active {
+        transform: translateY(-50px);
+      }
+
+      &.swiper-slide-prev,
+      &.swiper-slide-next {
+        transform: translateY(-25px);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .result-page {
+    // padding-bottom: 200px;
+  }
+
+  .menu-cat-nav {
+    width: 100%;
+    margin-bottom: 0;
+    left: 50%;
+    bottom: 25px;
+    padding: 15px;
+    margin-left: 0;
+    transform: translateX(-50%);
+
+    .btn {
+      margin-top: -40px;
+    }
+  }
+}
+
+.menu-container {
+  width: 100%;
+  height: 100vh;
+  // background-color: #bd4147;
+  position: relative;
+
+  .slide-wrap {
+    height: 100vh;
+  }
+
+  .menu-header {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 666;
+    text-align: center;
+
+    .site-logo {
+      a {
+        display: inline-block;
+
+        img {
+          height: 60px;
+          width: auto;
+          display: block;
+        }
+      }
+    }
+
+    .restaurant-name {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: $primaryColor;
+      font-family: $secondaryFont;
+      display: block;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 767px) {
+      .restaurant-name {
+        font-size: 1.8rem;
+        max-width: 320px;
+        margin: 15px auto 0;
+      }
+    }
+  }
+}
+
+.product-list {
+  width: 100%;
+}

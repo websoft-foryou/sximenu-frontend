@@ -1,0 +1,47 @@
+/**=====================
+    18. Switch  CSS Start
+==========================**/
+.switch {
+	position: relative;
+	display: inline-block;
+	width: 60px;
+	height: 34px;
+	input {
+		display: none;
+		&:checked + .switch-state {
+			background-color: $primary-color ;
+			&:before {
+				transform: translateX(26px);
+			}
+		}
+		&:focus + .switch-state {
+			box-shadow: 0 0 1px $primary-color ;
+		}
+	}
+}
+.switch-sm{
+	.switch{
+		width: 25px;
+		height: 16px;
+		margin-top: 10px;
+		margin-bottom: 0px;
+		.switch-state{
+			&:before {
+				height: 8px;
+				width: 8px;
+				left: 4px;
+				bottom: 4px;
+			}
+		}
+	}
+	input {
+		&:checked + .switch-state {
+			&:before {
+				left:-13px;
+			}
+		}
+	}
+}
+/**=====================
+     18. Switch  CSS Ends
+==========================**/

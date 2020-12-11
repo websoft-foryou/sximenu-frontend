@@ -1,0 +1,135 @@
+/**=====================
+    24. According CSS start
+==========================**/
+#accordionclose {
+    .accordion-item {
+        .panel {
+            p {
+                padding: 18px;
+            }
+        }
+    }
+}
+.panel-accordion {
+    .accordion {
+        border: none;
+        .accordion-item {
+            .title {
+                background-color: $white;
+                box-shadow: 1px 5px 24px 0 rgba($primary-color , 0.05);
+                font-weight: 600;
+                &:before {
+                    color: $theme-body-font-color;
+                    content: "\f067";
+                    font-family: $font-awesome;
+                    float: right;
+                    font-weight: 100;
+                }
+                &:after {
+                    display: none;
+                }
+            }
+            &.active {
+                .title {
+                    &:before {
+                      content: "\f068";
+                    }
+                }
+            }
+            + .accordion-item {
+                margin-top: 10px;
+            }
+        }
+    }
+    .card {
+        box-shadow: none;
+    }
+}
+.default-according{
+    .card{
+        margin-bottom: 0;
+        &+.card{
+            margin-top: $according-card-top-margin;
+        }
+        .btn-link{
+            font-weight: $according-btn-weight;
+            color: $theme-body-font-color;
+        }
+        .btn-link{
+            &:focus,&:hover{
+                text-decoration: none;
+            }
+        }
+        .card-body {
+            .card {
+                margin-bottom: 0 !important;
+                box-shadow: none;
+                .card-header {
+                    padding: 0;
+                    border-bottom: none;
+                    font-weight: 100;
+                }
+            }
+        }
+    }
+    .card-header{
+        padding: $according-card-header-padding;
+        margin: -1px;
+        font-weight: 600;
+        cursor: pointer;
+        strong {
+            cursor: pointer;
+        }
+        i{
+            position: absolute;
+            left: 18px;
+            font-size: 20px;
+            top: 20px;
+        }
+        h5{
+            margin-top: 2px;
+        }
+    }
+    .list-group-item {
+        padding: 0;
+        box-shadow: 1px 5px 24px 0 rgba($primary-color ,.05);
+        border: none;
+        + .list-group-item {
+            margin-top: 30px;
+        }
+    }
+    .container {
+        max-width: 100%;
+        .card {
+            &:last-child {
+                margin-bottom: 0 !important;
+            }
+        }
+    }
+}
+.default-according.style-1{
+    button{
+        width: 100%;
+        text-align: left;
+        &:before{
+            right: 20px;
+            position: absolute;
+            transition: 0.4s;
+        }
+        &[aria-expanded="true"]{
+            &:before{
+                content: $according-open-icon;
+                font-family: $according-card-header-icon;
+            }
+        }
+        &[aria-expanded="false"]{
+            &:before{
+                content: $according-close-icon;
+                font-family: $according-card-header-icon;
+            }
+        }
+    }
+}
+/**=====================
+     24. According CSS Ends
+==========================**/

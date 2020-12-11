@@ -1,0 +1,199 @@
+/**=====================
+    44. Tabs CSS Start
+==========================**/
+.nav-pills {
+  border-bottom: none !important;
+  .nav-tabs {
+    &.nav-item {
+      .nav-link {
+        border: none;
+        border-radius: 4px;
+      }
+    }
+  }
+}
+@each $border-tab-name, $border-tab-color in (primary, $primary-color ),
+        (secondary, $secondary-color) ,
+        (success, $success-color),
+        (danger, $danger-color),
+        (info, $info-color),
+        (light, $light-color),
+        (dark, $dark-color),
+        (warning, $warning-color) {
+  .border-tab-#{$border-tab-name}{
+    .nav-tabs {
+      &.nav-item {
+        .nav-link {
+          color: $border-tab-color;
+        }
+      }
+      .nav-link {
+        &.active {
+          color: $theme-body-font-color;
+        }
+      }
+    }
+  }
+}
+@each $nav-name, $nav-color in (primary, $primary-color ),
+        (secondary, $secondary-color) ,
+        (success, $success-color),
+        (danger, $danger-color),
+        (info, $info-color),
+        (light, $light-color),
+        (dark, $dark-color),
+        (warning, $warning-color) {
+  .nav-#{$nav-name}{
+    .nav-tabs {
+      &.nav-item {
+        .nav-link {
+          color: $nav-color !important;
+          &.active {
+            background-color: $nav-color;
+            color: $white !important;
+          }
+        }
+      }
+    }
+  }
+}
+.nav{
+  i{
+    margin-right: 10px;
+  }
+}
+
+.tabbed-card{
+  ul{
+    position: absolute;
+    right: 15px;
+    top: 22px;
+  }
+}
+
+// vertical tab
+.tab-vertical {
+  .nav-tabs {
+    display: block;
+    border: 1px solid $horizontal-border-color;
+    border-radius: 8px;
+    overflow: hidden;
+    height: 100%;
+    .nav-link {
+      border-radius: 0;
+      border:none;
+      padding: .75rem 1.25rem;
+      cursor: pointer;
+      + .nav-link {
+        border-top: 1px solid $horizontal-border-color;
+      }
+      &:hover, &:focus {
+        background-color: #f8f9fa;
+      }
+      &.react-tabs__tab--selected {
+        background-color: $primary-color ;
+        color: $white;
+        border-color: $primary-color ;
+      }
+    }
+  }
+  .react-tabs__tab-panel--selected {
+    flex: 0 0 66.66667%;
+    max-width: 66.66667%;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.tab-content {
+  .tab-pane {
+    &.active {
+      animation: fadeIn 0.5s ease-out;
+    }
+  }
+}
+.nav-tabs {
+  .nav-tabs {
+    &.nav-item {
+      border-bottom: none;
+      .nav-link {
+        cursor: pointer;
+      }
+    }
+  }
+}
+@each $border-tab-name, $border-tab-color in (primary, $primary-color ),
+        (secondary, $secondary-color) ,
+        (success, $success-color),
+        (danger, $danger-color),
+        (info, $info-color),
+        (light, $light-color),
+        (dark, $dark-color),
+        (warning, $warning-color) {
+  .borderb-tab-#{$border-tab-name}{
+    border-bottom: none;
+    top: 1px !important ;
+    .nav-tabs {
+      &.nav-item {
+        .nav-link {
+          font-size: 16px;
+          padding: 28px 15px;
+          border: none;
+          color: $theme-body-font-color;
+          border-bottom: 2px solid $transparent-color !important;
+        }
+      }
+      .nav-link {
+        &.active {
+          border: none;
+          color: $border-tab-color;
+          border-bottom: 2px solid $border-tab-color !important;
+        }
+      }
+      .nav-item {
+        &.show {
+          .nav-link {
+            border: none;
+          }
+        }
+      }
+    }
+  }
+}
+.tab-list-bottom {
+  &.nav-tabs {
+    .nav-tabs {
+      &.nav-item {
+        border-top: none;
+      }
+    }
+    .nav-link {
+      &.active {
+        border-color: $white $horizontal-border-color $horizontal-border-color;
+      }
+    }
+   .nav-item{
+     &.show {
+      .nav-link {
+        border-color: $white $horizontal-border-color $horizontal-border-color;
+      }
+     }
+   }
+  }
+}
+.right-tablist {
+  justify-content: flex-end;
+}
+.vertical-tabset {
+  display: block;
+  border-bottom: none;
+  .nav-tabs {
+    &.nav-item {
+      display: block;
+    }
+  }
+}
+/**=====================
+     44. Tabs CSS Ends
+==========================**/

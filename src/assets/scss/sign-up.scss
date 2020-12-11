@@ -1,0 +1,33 @@
+@import "inc/variables";
+
+.auth-page-header {
+  background-color: rgba($defaultColor, .05);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  .moto-tag {
+    font-size: 2rem;
+    margin-top: 20px;
+  }
+
+  .moto-tag {
+    color: #ffffff;
+  }
+
+  .auth-page-header-inner {
+    padding: 50px 0;
+    background-color: rgba($defaultColor, .8);
+  }
+
+  .site-logo {
+    img {
+      height: 80px;
+      width: auto;
+    }
+  }
+}
+
+.auth-content {
+  padding: 50px 0;
+}

@@ -1,0 +1,282 @@
+/*@media (min-width: 1200px) {
+  .container {
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .container,
+  .container-sm {
+    max-width: 100%;
+  }
+}*/
+
+.btn {
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0 1.75rem;
+  border-radius: 7px;
+  height: 40px;
+  line-height: 38px;
+
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+
+  &.btn-sm {
+    padding: 0 .75rem;
+    border-radius: 3px;
+    font-size: .9rem;
+    height: 30px;
+    line-height: 30px;
+  }
+
+  &.btn-lg {
+    padding: .85rem 2rem;
+    line-height: 0px;
+  }
+}
+
+.btn-primary {
+  background-color: $primaryColor;
+  border-color: $primaryColor;
+
+  &:hover {
+    background-color: darken($primaryColor, 10%);
+    border-color: darken($primaryColor, 10%);
+  }
+
+  &.focus,
+  &:focus {
+    background-color: darken($primaryColor, 15%) !important;
+    border-color: darken($primaryColor, 15%) !important;
+    box-shadow: 0 0 0 0.2rem rgba($primaryColor, .5) !important;
+  }
+}
+
+.btn-secondary {
+  background-color: $secondaryColor;
+  border-color: $secondaryColor;
+
+  &:hover {
+    background-color: darken($secondaryColor, 10%);
+    border-color: darken($secondaryColor, 10%);
+  }
+
+  &.focus,
+  &:focus {
+    background-color: darken($secondaryColor, 15%) !important;
+    border-color: darken($secondaryColor, 15%) !important;
+    box-shadow: 0 0 0 0.2rem rgba($secondaryColor, .5) !important;
+  }
+}
+
+.btn-default {
+  background-color: rgba($defaultColor, .05);
+  border-color: rgba($defaultColor, .07);
+
+  &:hover {
+    background-color: rgba($defaultColor, .1);
+    border-color: rgba($defaultColor, .1);
+  }
+
+  &.focus,
+  &:focus {
+    background-color: rgba($defaultColor, .1) !important;
+    border-color: rgba($defaultColor, .1) !important;
+    box-shadow: none !important;
+  }
+}
+
+
+// Modal
+.modal-header {
+  position: relative;
+  padding: 2rem 1.4rem 0;
+  border: 0 none;
+
+  .close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 0;
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+    text-align: center;
+    display: block;
+  }
+
+  .modal-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: $secondaryColor;
+    letter-spacing: .05rem;
+  }
+}
+
+@media (min-width: 992px) {
+ .modal-lg, .modal-xl {
+   max-width: 600px;
+ }
+}
+
+[dir="rtl"] {
+  .modal-header {
+    .close {
+      right: auto;
+      left: 10px;
+    }
+  }
+}
+
+.modal-body {
+  padding: 1.4rem;
+}
+
+// form
+.form-control {
+  border-radius: 7px;
+  height: 40px;
+}
+
+.custom-control-label {
+  line-height: 1.45;
+}
+
+// Accordion
+.accordion {
+  & > .card {
+    border: 0 none;
+    overflow: initial;
+
+    &:not(:last-child) {
+      margin-bottom: 30px;
+    }
+  }
+
+  .card-header {
+    padding: 0;
+    border-bottom: 0 none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .title-inner {
+      display: flex;
+      align-items: center;
+    }
+
+    .title-icon {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba($defaultColor, .3);
+      line-height: 30px;
+      text-align: center;
+      flex: 0 0 34px;
+      margin-right: 10px;
+      border-radius: 50%;
+      font-size: .875rem;
+    }
+
+    .title-text {
+      font-size: 1.5rem;
+      font-weight: 400;
+      font-family: $secondaryFont;
+      opacity: .8;
+      letter-spacing: .03rem;
+    }
+
+    .arrow-icon {
+      margin-left: auto;
+    }
+  }
+
+  .card-body {
+    padding-right: 0;
+    padding-left: 0;
+    padding-bottom: 0;
+  }
+}
+
+[dir="rtl"] .accordion {
+  .card-header {
+    padding: 0;
+    border-bottom: 0 none;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .title-inner {
+      display: flex;
+      align-items: center;
+    }
+
+    .title-icon {
+      margin-right: 0;
+      margin-left: 10px;
+    }
+
+    .arrow-icon {
+      margin-left: 0;
+      margin-right: auto;
+    }
+  }
+}
+
+// Table
+.table {
+  thead th {
+    font-size: .8rem;
+    text-transform: uppercase;
+  }
+
+  td, th {
+    border-top: 1px solid rgba($defaultColor, 0);
+    vertical-align: middle;
+  }
+
+  thead th {
+    border-top: 0 none;
+    border-bottom: 0 none;
+    background-color: rgba($defaultColor, .1);
+  }
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba($defaultColor, .035);
+}
+
+// Pagination
+.pagination {
+  margin-bottom: 0;
+
+  li {
+
+  }
+
+  .page-link {
+    border: 0 none;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    color: $defaultLightColor;
+
+    &:hover {
+      background-color: transparent;
+      color: $primaryColor;
+    }
+  }
+
+  .page-item.active {
+    .page-link {
+      color: $primaryColor;
+      background-color: transparent;
+      border-bottom: 2px solid $primaryColor;
+    }
+  }
+}

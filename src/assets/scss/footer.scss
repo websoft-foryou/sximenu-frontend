@@ -1,0 +1,165 @@
+@import "inc/variables";
+@import "inc/mixins";
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 10px 0;
+  background-color: $defaultColor;
+  color: $defaultLightColor;
+  z-index: 888;
+  width: 100%;
+
+  .footer-inner {
+    display: flex;
+    padding: 0 20px;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .lang-list {
+    display: flex;
+    align-items: center;
+
+    .lang-btn {
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border: 0 none;
+      background-color: transparent;
+
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+
+      img {
+        width: 100%;
+        height: auto;
+        display: block;
+        filter: grayscale(100%);
+        opacity: .7;
+      }
+
+      &.active {
+        img {
+          opacity: 1;
+          filter: grayscale(0);
+        }
+      }
+    }
+  }
+
+  .container {
+    padding: 0;
+  }
+
+  .app-name {
+    font-weight: bold;
+    font-family: $secondaryFont;
+
+    a {
+      color: $defaultLightColor;
+    }
+  }
+}
+
+.bottom-sheet {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  width: 100%;
+  background-color: $defaultColor;
+  color: $defaultLightColor;
+  border-bottom: 1px solid rgba(#ffffff, .15);
+
+  .top-text {
+    color: #ffffff;
+  }
+
+  .info-toggle-btn {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    margin-left: -25px;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    color: $primaryColor;
+    font-size: 1.6rem;
+    background-color: $defaultColor;
+    border: 0 none;
+    z-index: 10;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .form-control {
+    background-color: #121212;
+    border: 1px solid rgba(#fff, .5);
+
+    &:focus {
+      background-color: #000000;
+      outline: none;
+      border-color: $primaryColor;
+      box-shadow: none;
+    }
+  }
+
+  .bottom-sheet-title {
+    padding: 20px;
+  }
+
+  .bottom-sheet-content {
+    overflow-x: hidden;
+    height: 0;
+    transition: all ease-in-out .3s;
+
+    .bottom-sheet-content-inner {
+      padding: 25px 20px;
+    }
+  }
+
+  .card {
+    background-color: transparent;
+  }
+
+  .accordion .card-header .title-icon {
+    border: 1px solid rgba(#fff, 0.3);
+  }
+
+  .accordion .card-header .title-text {
+    color: #ffffff;
+  }
+}
+
+[dir="rtl"] .bottom-sheet {
+
+}
+
+.show-bottom-sheet {
+  .bottom-sheet {
+    .bottom-sheet-content {
+      height: 70vh;
+    }
+  }
+}
+
+[dir="rtl"] {
+  .footer {
+    .lang-list {
+      .lang-btn {
+        &:not(:last-child) {
+          margin-right: 0;
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+
+  .bottom-sheet {
+    text-align: right;
+  }
+}

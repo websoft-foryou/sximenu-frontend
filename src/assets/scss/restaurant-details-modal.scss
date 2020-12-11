@@ -1,0 +1,18 @@
+.options-area {
+  text-align: center;
+  z-index: 680;
+  position: relative;
+
+  .btn {
+    margin-top: -70px;
+  }
+
+  @media (max-width: 767px) {
+    margin-top: 0;
+
+    .btn.btn-lg {
+      padding: .35rem .75rem;
+      font-size: .8rem;
+    }
+  }
+}

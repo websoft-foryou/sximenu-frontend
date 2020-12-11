@@ -1,0 +1,19 @@
+@import "inc/mixins";
+@import "inc/variables";
+
+.menu-block {
+  @media (min-width: 768px) {
+    padding: 0 25px;
+  }
+
+  .menu-block-header {
+    text-align: center;
+    margin-bottom: 40px;
+
+    .menu-block-title {
+      font-size: 1rem;
+      text-transform: uppercase;
+      color: $secondaryColor;
+    }
+  }
+}

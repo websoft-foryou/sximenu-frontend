@@ -1,0 +1,9 @@
+.review-rating {
+  span:not(:last-child) {
+    margin-right: 5px;
+  }
+}
+
+.rating-icon {
+  width: 24px;
+}

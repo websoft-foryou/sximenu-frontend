@@ -1,0 +1,47 @@
+@import "inc/variables";
+@import "inc/mixins";
+
+
+.header {
+  width: 100%;
+  color: #ffffff;
+  background-color: $defaultLightColor;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-align: center;
+
+  .site-logo {
+    display: block;
+    margin-bottom: 20px;
+
+    a {
+      display: inline-block;
+    }
+
+    img {
+      height: 80px;
+    }
+  }
+
+  .page-title {
+    font-size: 1.45rem;
+  }
+
+  &,
+  .overlay {
+    padding: 60px 0;
+
+    @media (max-width: 767px) {
+      padding: 40px 0;
+    }
+  }
+
+  &.has-overlay {
+    padding: 0;
+
+    .overlay {
+      background-color: rgba($defaultColor, .8);
+    }
+  }
+}

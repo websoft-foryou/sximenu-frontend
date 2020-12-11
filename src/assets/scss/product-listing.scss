@@ -1,0 +1,80 @@
+@import "inc/mixins";
+@import "inc/variables";
+
+.product-container {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow-x: hidden;
+
+  .full-overlay {
+    background-color: rgba($defaultColor, .5);
+    min-height: 100vh;
+  }
+
+  .item-name {
+    text-align: center;
+    color: #ffffff;
+    margin-bottom: 15px;
+    padding-top: 70px;
+    font-size: 2rem;
+  }
+
+  .site-logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 888;
+
+    a {
+      display: inline-block;
+
+      img {
+        height: 60px;
+        width: auto;
+      }
+    }
+  }
+
+  .menu-header {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    margin-bottom: 30px;
+  }
+
+  .product-listing {
+    padding: 0 15px 90px;
+  }
+
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 2.2rem;
+    color: $primaryColor;
+  }
+
+
+  .swiper-button-next,
+  .swiper-container-rtl .swiper-button-prev {
+    right: 20px;
+  }
+
+  .swiper-button-prev,
+  .swiper-container-rtl .swiper-button-next {
+    left: 20px;
+  }
+
+  @media (max-width: 991px) {
+    .swiper-button-next,
+    .swiper-container-rtl .swiper-button-prev {
+      right: 0;
+    }
+
+    .swiper-button-prev,
+    .swiper-container-rtl .swiper-button-next {
+      left: 0;
+    }
+  }
+}

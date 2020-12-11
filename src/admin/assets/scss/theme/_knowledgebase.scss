@@ -1,0 +1,132 @@
+/**=====================
+     75. knowledgebase CSS start
+==========================**/
+.search-knowledge {
+  .form-group {
+    &:before, &:after {
+      display: none;
+    }
+  }
+  input {
+    background-color: $white;
+    padding-left: 15px;
+    font-size: 14px;
+  }
+}
+.browse{
+  img {
+    margin: 0 auto;
+  }
+  .browse-articles{
+    span{
+      vertical-align: middle;
+      svg{
+        width: 14px;
+        height: 14px;
+        margin-right: 10px;
+        vertical-align: text-top;
+      }
+    }
+    h6{
+      font-weight: 600;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+      border-bottom: 1px solid $light;
+      span{
+        svg{
+          width: 16px;
+          height: 16px;
+          vertical-align: text-top;
+        }
+      }
+    }
+    ul{
+      li{
+        padding: 10px;
+        border-radius: 8px;
+        a{
+          color: $theme-body-font-color;
+          font-size: 14px;
+          &:hover {
+            text-decoration: none;
+          }
+        }
+        &:hover{
+          background-color: $light;
+        }
+      }
+    }
+  }
+  [class^="col-"] {
+    + [class^="col-"] {
+      + [class^="col-"] {
+        + [class^="col-"] {
+          margin-top: 30px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1366px){
+  .browse{
+    div[class^="col-"]{
+      &:nth-child(3){
+        margin-top: 30px;
+      }
+    }
+  }
+}
+@media only screen and (max-width: 1199px) {
+  .browse{
+    [class^="col-"] {
+      margin-top: 30px;
+      &:first-child {
+        margin-top: 0 !important;
+      } 
+    }
+  }
+}
+@media only screen and (max-width: 991px){
+  .browse{
+    [class^="col-"] {
+      margin-top: 20px !important;
+    }
+  }
+}
+@media only screen and (max-width: 575px){
+  .browse{
+    [class^="col-"] {
+      margin-top: 15px !important;
+    }
+  }
+  .search-knowledge {
+    &.pull-right {
+      float: left;
+    }
+  }
+}
+@media only screen and (max-width: 360px){
+  .browse{
+    .browse-articles{
+      ul{
+        li{
+          a{
+            span{
+              &:nth-child(2){
+                width: 158px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: inline-block;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+/**=====================
+     75. knowledgebase CSS end
+==========================**/

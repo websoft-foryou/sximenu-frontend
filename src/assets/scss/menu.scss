@@ -1,0 +1,59 @@
+@import "inc/variables";
+
+.menu-slide {
+  height: 100vh;
+  width: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: block;
+
+  .slide-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba($defaultColor, .5);
+    color: #ffffff;
+    padding: 50px 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .menu-title {
+    font-size: 4rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: .1rem;
+    font-family: $secondaryFont;
+    line-height: 1.1;
+
+    @media (max-width: 767pc) {
+      font-size: 3.5rem;
+    }
+  }
+}
+
+.swiper-button-next,
+.swiper-container-rtl .swiper-button-prev {
+  right: 0;
+}
+
+.swiper-button-prev,
+.swiper-container-rtl .swiper-button-next {
+  left: 0;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-top: -20px;
+
+  &:focus {
+    outline: none;
+  }
+}

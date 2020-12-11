@@ -1,0 +1,21 @@
+/**=====================
+    89. Rating CSS start
+==========================**/
+.rating-container, .widget-ratings {
+    .widget-container {
+        svg {
+            width: 30px  !important;
+            height: 30px !important;
+            &.widget-svg {
+                &.hovered, &.widget-selected {
+                    .widget {
+                        fill: $primary-color  !important;
+                    }
+                }
+            }
+        }
+    }
+}
+/**=====================
+    89. Rating CSS Ends
+==========================**/

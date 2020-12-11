@@ -1,0 +1,42 @@
+/**=====================
+    30. Data-table CSS Start
+==========================**/
+.ReactTable {
+  .rt-table {
+    .rt-thead {
+      border-bottom: 1px solid $light-semi-gray;
+      box-shadow: none !important;
+      .rt-tr {
+        .rt-th {
+          padding: 15px 10px;
+        }
+      }
+    }
+    .rt-tbody {
+      .rt-tr-group {
+        .rt-tr {
+          align-items: center;
+          &:hover {
+            background-color: #f6f6f6;
+          }
+          &.-odd {
+            background-color: #f9f9f9;
+          }
+          .rt-td {
+            padding: 5px !important;
+            > div {
+              background-color: $transparent-color !important;
+            }
+          }
+        }
+      }
+    }
+  }
+  .-pagination {
+    border-top: 1px solid $light-semi-gray !important;
+    box-shadow: none !important;
+  }
+}
+/**=====================
+     30. Data-table CSS Ends
+==========================**/

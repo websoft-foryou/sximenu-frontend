@@ -1,0 +1,28 @@
+@mixin transition($value: all ease-in-out .2s) {
+    transition: $value;
+    -webkit-transition: $value;
+    -moz-transition: $value;
+    -o-transition: $value;
+}
+
+@mixin transform($value: translateY(-50%)) {
+    transform: $value;
+    -webkit-transform: $value;
+    -moz-transform: $value;
+    -ms-transform: $value;
+    -o-transform: $value;
+}
+
+@mixin box-shadow($value: 0 2px 12px 0 rgba(0, 0, 0, 0.29)) {
+    box-shadow: $value;
+    -webkit-box-shadow: $value;
+    -moz-box-shadow: $value;
+    -o-box-shadow: $value;
+}
+
+@mixin background-size($value: cover) {
+    background-size: $value;
+    -webkit-background-size: $value;
+    -moz-background-size: $value;
+    -o-background-size: $value;
+}

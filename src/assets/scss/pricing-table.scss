@@ -1,0 +1,86 @@
+@import "inc/variables";
+
+.pricing-table {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid $defaultLightColor;
+  height: calc(100% - 30px);
+  margin-bottom: 30px;
+  border-radius: 10px;
+
+  .table-header {
+    padding: 40px 30px 25px;
+    text-align: center;
+    background-color: $defaultColor;
+    border-radius: 10px 10px 0 0;
+
+    .title {
+      font-size: 1rem;
+      text-transform: uppercase;
+      opacity: .7;
+      margin-bottom: 15px;
+      color: #ffffff;
+    }
+
+    .price {
+      font-size: 2.5rem;
+      color: #ffffff;
+      font-weight: bold;
+      line-height: 1;
+
+      small {
+        transform: translateY(-6px);
+        display: inline-block;
+      }
+    }
+
+    .text {
+      margin-top: 5px;
+      font-size: .875rem;
+    }
+  }
+
+  &.highlight {
+    border: 1px solid $secondaryLightColor;
+
+    .table-header {
+      background-color: $secondaryColor;
+
+      .title {
+        color: #ffffff;
+      }
+
+      .price {
+        color: #ffffff;
+      }
+    }
+  }
+
+  .action {
+    padding: 15px 30px 30px;
+  }
+
+  .features-list {
+    list-style-type: none;
+    padding: 30px 30px 15px;
+
+    li {
+      padding-left: 24px;
+      position: relative;
+
+      &:not(:last-child) {
+        margin-bottom: 12px;
+      }
+
+      .list-icon {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      &.disabled {
+        opacity: .6;
+      }
+    }
+  }
+}

@@ -1,0 +1,100 @@
+/* BEGIN(data table) */
+.rt-table .rt-td .fa.fa-trash, .rt-table .rt-td .fa.fa-pencil {
+    cursor:pointer;
+}
+
+.rt-table .rt-td .datamng-control.delete:hover {
+    border: 1px solid #f7afaf;
+    border-radius: 10px;
+}
+
+.rt-table .rt-td .datamng-control.edit:hover {
+   border: 1px solid #83b966;
+   border-radius: 10px;
+}
+/* End */
+
+/* BEGIN(product table) */
+.product_list_thumbnail img{
+    height: 40px;
+    border-radius: 5px;
+    margin-right: 5px;
+}
+
+.product_type_thumbnail img{
+    height: 30px;
+    margin-right: 10px;
+    border: 1px solid #ff9f40ad;
+    border-radius: 50%;
+    padding: 3px;
+}
+/* END */
+
+/* BEGIN(restaurant information) */
+.hours_opening .time_picker_container {
+    width: 33%;
+    float: left;
+    margin-left: 10px;
+}
+.hours_opening .time_picker_preview {
+    height: 45px;
+}
+
+.hours_opening .time_picker_container .preview_container {
+    width: 100%;
+    left: 63% !important;
+    line-height: 48px !important;
+}
+/* END */
+
+/* BEGIN(payment setting) */
+.payment_type {
+    width: 100%;
+    background-color: #f3f3f3;
+    height: 70px;
+    display: block;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.payment_type.visa {
+    padding-top: 10px;
+}
+.payment_type.paypal {
+    padding-top: 20px;
+}
+.payment_type.selected {
+    background-color: #B1D328;
+    cursor: default;
+}
+/* END */
+
+
+/* BEGIN(overlay) */
+.overlay {
+    height: 100%;
+    width: 100%;
+    display: block;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0, 0.7);
+}
+
+.overlay-content {
+    position: relative;
+    top: 46%;
+    width: 80%;
+    text-align: center;
+    margin-top: 30px;
+    margin: auto;
+}
+/* END */
+
+.login:hover {
+    text-decoration: underline;
+}
+
+

@@ -1,0 +1,157 @@
+@import "inc/variables";
+@import "inc/mixins";
+
+.hero-section {
+  width: 100%;
+  background-color: #ffffff;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  &.has-overlay {
+    padding: 0;
+  }
+
+  .hero-overlay {
+    height: 100vh;
+    width: 100%;
+    background-color: rgba($defaultColor, .8);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 150px 0 50px;
+    overflow-x: hidden;
+
+    .hero-content {
+      width: 100%;
+      height: 500px;
+    }
+
+    @media (max-width: 667px) {
+      padding: 80px 0 30px;
+    }
+  }
+
+  .content-header {
+    margin-bottom: 70px;
+    text-align: center;
+  }
+
+  .content-footer {
+    margin-top: 60px;
+    text-align: center;
+    font-size: .875rem;
+    opacity: .6;
+  }
+
+  .logo-img {
+    height: 80px;
+    width: auto;
+    display: inline-block;
+  }
+
+  @media (min-width: 768px) {
+    .logo-img {
+      height: 115px;
+    }
+  }
+
+  .footer-link {
+    margin-bottom: 8px;
+
+    span, a {
+      color: $primaryColor;
+    }
+  }
+}
+
+.hero-search-form {
+  text-align: center;
+
+  .form-control {
+    height: 54px;
+    margin-bottom: 40px;
+    padding: 0 20px;
+  }
+
+  .fp__input-group {
+    .form-control {
+      padding-right: 40px;
+      background-color: rgba($defaultColor, .6);
+      border-color: rgba(#fff, .7);
+      border-radius: 30px;
+      color: #ffffff;
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 5px rgba($primaryColor, .3);
+        background-color: rgba($defaultColor, .8);
+        border-color: $primaryColor;
+      }
+    }
+
+    .fp__icon {
+      color: $primaryColor;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+  }
+
+  .qr-action {
+    position: relative;
+  }
+
+  .btn {
+    height: 44px;
+    line-height: 40px;
+    padding: 0 20px;
+    margin: 0 10px;
+    width: 180px;
+    border-radius: 30px;
+
+    svg {
+      margin-right: 5px;
+    }
+  }
+
+  @media (max-width: 667px) {
+    .btn {
+      width: 100%;
+      margin: 0;
+    }
+  }
+}
+
+.fp__input-group {
+  div {
+    width: 100%;
+    text-align: left;
+  }
+
+  input {
+    color: #ffffff !important;
+    width: 100%;
+    pointer-events: none;
+  }
+}
+
+[dir="rtl"] {
+  .fp__input-group div {
+    text-align: right;
+  }
+
+  .fp__input-group > div > .css-placeholder {
+    padding: 0 20px 0 50px !important;
+    color: #212121;
+  }
+
+  .hero-search-form {
+    .fp__input-group {
+      .form-control {
+        padding-right: 20px;
+        padding-left: 40px;
+      }
+    }
+  }
+}
