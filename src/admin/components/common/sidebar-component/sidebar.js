@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import { translate } from 'react-switch-lang';
 import configDB from '../../../config';
 
+import '../../../assets/css/mystyle.css'
+
 const Sidebar = (props) => {
     const [margin, setMargin] = useState(0);
     const [width, setWidth] = useState(0);
@@ -24,7 +26,6 @@ const Sidebar = (props) => {
         handleResize();
 
         var currentUrl = window.location.pathname;
-
         // eslint-disable-next-line
         mainmenu.filter(items => {
             if (items.path === currentUrl)
@@ -45,14 +46,16 @@ const Sidebar = (props) => {
 
         setTimeout(() => {
             const elmnt = document.getElementById("myDIV");
-            const menuWidth = elmnt.offsetWidth;
-            // setMenuWidth(menuWidth)
-            if (menuWidth > window.innerWidth) {
-                setHideRightArrow(false);
-                setHideLeftArrowRTL(false);
-            } else {
-                setHideRightArrow(true);
-                setHideLeftArrowRTL(true);
+            if (elmnt) {
+                const menuWidth = elmnt.offsetWidth;
+                // setMenuWidth(menuWidth)
+                if (menuWidth > window.innerWidth) {
+                    setHideRightArrow(false);
+                    setHideLeftArrowRTL(false);
+                } else {
+                    setHideRightArrow(true);
+                    setHideLeftArrowRTL(true);
+                }
             }
         }, 500)
 
@@ -78,6 +81,7 @@ const Sidebar = (props) => {
             if (menuItem.children) {
                 // eslint-disable-next-line
                 menuItem.children.filter(submenuItems => {
+                    submenuItems.active = item === submenuItems ? true : false;
                     if (submenuItems.children && submenuItems.children.includes(item)) {
                         menuItem.active = true
                         submenuItems.active = true
@@ -85,7 +89,7 @@ const Sidebar = (props) => {
                 })
             }
         })
-        item.active = !item.active
+        //item.active = !item.active
         setMainMenu({ mainmenu: MENUITEMS })
 
     }
@@ -195,7 +199,7 @@ const Sidebar = (props) => {
                                         <div className="sidebar-title">{menuItem.sidebartitle}</div>
                                         : ''}
                                     {(menuItem.type === 'sub') ?
-                                        <a className="sidebar-header" href="#javascript" onClick={() => toggletNavActive(menuItem)}>
+                                        <a className="sidebar-header" style={{cursor: `pointer`}} onClick={() => toggletNavActive(menuItem)}>
                                             <menuItem.icon />
                                             <span>{props.t(menuItem.title)}</span>
                                             <i className="fa fa-angle-right pull-right"></i>

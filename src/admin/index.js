@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { ScrollContext } from 'react-router-scroll-4';
 
@@ -20,10 +20,12 @@ import Pricing from "./components/other/pricing";
 import EmailSetting from "./components/setting/email_setting";
 import PasswordSetting from "./components/setting/password_setting";
 import PaymentSetting from "./components/setting/payment_setting";
+import AuthService from "./auth/auth_service";
 
 import './index.scss';
 
 
+const Auth = new AuthService();
 
 const Admin = () => {
     const abortController = new AbortController();
@@ -44,34 +46,56 @@ const Admin = () => {
 
     }, [abortController]);
 
+    const isLoggedIn = () => {
+        return Auth.isAuthenticated();
+    };
+
+    const isAdmin = () => {
+        //return Auth.isAdmin();
+        return false;
+    }
+
+    const PrivateRoute = ({ component: Component, ...rest }) => (
+        <Route {...rest} render={(props) => (
+            isLoggedIn() ? <App><Component {...props} /></App>  : <Redirect to='/admin/login' />
+        )} />
+    );
+
+    const PublicRoute = ({ component: Component, ...rest }) => (
+        <Route {...rest} render={(props) =>
+            <Component {...props} />
+        } />
+    );
+
     return (
         <div className="App">
             <Provider store={store}>
                 <BrowserRouter basename={`/`}>
                     <ScrollContext>
                         <Switch>
-                            <Route path="/admin/login" component={Signin} />
-                            <Fragment>
-                                <App>
-                                    <Route exact path="/" render={() => {
-                                        return (<Redirect to="admin/dashboard" />)
-                                    }} />
-                                    <Route path="/admin/dashboard" component={UserDashboard} />
-                                    <Route path="/admin/category" component={Category} />
-                                    <Route path="/admin/product" component={Product} />
-                                    <Route path="/admin/restuarant" component={Restaurant} />
+                            <Route path="/admin/login" render={ () => isLoggedIn() ? <Redirect to='/admin/dashboard' /> : <Signin /> } />
 
-                                    <Route path="/admin/history" component={UserHistory} />
-                                    <Route path="/admin/user_analytics" component={UserAnalytics} />
-                                    <Route path="/admin/income_analytics" component={IncomeAanalytics} />
+                            {!isAdmin() ?
+                                <>
+                                    <PrivateRoute path="/admin/dashboard" component={UserDashboard}/>
+                                    <PrivateRoute path="/admin/category" component={() => <Category auth={Auth} />} />
+                                    <PrivateRoute path="/admin/product" component={() => <Product auth={Auth} />}/>
+                                    <PrivateRoute path="/admin/restuarant" component={Restaurant}/>
 
-                                    <Route path="/admin/membership" component={Pricing} />
-                                    <Route path="/admin/email_setting" component={EmailSetting} />
-                                    <Route path="/admin/password_setting" component={PasswordSetting} />
-                                    <Route path="/admin/payment_setting" component={PaymentSetting} />
+                                    <PrivateRoute path="/admin/history" component={UserHistory}/>
+                                    <PrivateRoute path="/admin/user_analytics" component={UserAnalytics}/>
+                                    <PrivateRoute path="/admin/income_analytics" component={IncomeAanalytics}/>
 
-                                </App>
-                            </Fragment>
+                                    <PrivateRoute path="/admin/membership" component={Pricing}/>
+                                    <PrivateRoute path="/admin/email_setting" component={EmailSetting}/>
+                                    <PrivateRoute path="/admin/password_setting" component={PasswordSetting}/>
+                                    <PrivateRoute path="/admin/payment_setting" component={PaymentSetting}/>
+                                </>
+                                :
+                                <PrivateRoute path="/admin/dashboard" component={UserDashboard}/>
+                            }
+
+                            <PublicRoute path="/admin/*">404 | Not found</PublicRoute>
                         </Switch>
                     </ScrollContext>
                 </BrowserRouter>

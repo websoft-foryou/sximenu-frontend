@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Link, Redirect, useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {Container} from "react-bootstrap";
 
 import headerBackground from "../assets/img/page-header-bg.jpg";

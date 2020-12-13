@@ -1,31 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import logo from '../assets/images/endless-logo.png';
-import man from '../assets/images/dashboard/user.png';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { withRouter } from "react-router";
+import AuthService from './auth_service';
+import myAPI from "../../Api";
+
+import '../../admin/assets/css/mystyle.css';
+
+const Signin = () => {
+    const history = useHistory();
+    const Auth = new AuthService();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
 
 
-const Signin = ({ history }) => {
-    const [email, setEmail] = useState("test@gmail.com");
-    const [password, setPassword] = useState("test123");
-
-    const [value, setValue] = useState(
-        localStorage.getItem('profileURL' || man)
-    );
-
-    useEffect(() => {
-        if (value !== null)
-            localStorage.setItem('profileURL', value);
-        else
-            localStorage.setItem('profileURL', man);
-    }, [value]);
 
     const loginAuth = async () => {
+        if (email === '') {
+            toast.warn("Oppss.. Please enter the email.", {autoClose: 2000});
+            return;
+        }
+        if (password === '') {
+            toast.warn("Oppss.. Please enter the password.", {autoClose: 2000});
+            return;
+        }
+
+
         try {
-            history.push('/admin/dashboard');
+            setLoading(true);
+            await myAPI.loginUser({
+                email: email,
+                password: password,
+            }).then(response => {
+
+                if (response.data.success === true) {
+                    Auth.finishAuthentication(response.data.result.token, response.data.result.membership);
+                    history.push('/admin/dashboard');
+                }
+                else
+                    toast.error(response.data.result, {autoClose: 3000});
+            });
+
+        } catch(err) {
+            setTimeout(() => {
+                toast.error("Oppss.. The password is invalid or the user does not have a password.");
+            }, 200);
+        } finally {
+            setLoading(false);
+        }
+
+        try {
+
         } catch (error) {
             setTimeout(() => {
                 toast.error("Oppss.. The password is invalid or the user does not have a password.");
@@ -33,8 +64,23 @@ const Signin = ({ history }) => {
         }
     }
 
+
     return (
         <div>
+            {loading &&
+            <div id="myOverlay" className="overlay">
+                <div className="overlay-content">
+                    <div className="loader-box" style={{display: "block"}}>
+                        <div className="loader">
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
             <div className="page-wrapper">
                 <div className="container-fluid p-0">
                     {/* <!-- login page start--> */}
@@ -54,18 +100,12 @@ const Signin = ({ history }) => {
                                                 <form className="theme-form" >
                                                     <div className="form-group">
                                                         <label className="col-form-label pt-0">Your Name</label>
-                                                        <input className="form-control" type="email" name="email"
-                                                            value={email}
-                                                            onChange={e => setEmail(e.target.value)}
-                                                            placeholder="Email address"
-                                                        />
+                                                        <input className="form-control" type="email" name="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email address" />
                                                         {/* {errors.email && 'Email is required'} */}
                                                     </div>
                                                     <div className="form-group">
                                                         <label className="col-form-label">Password</label>
-                                                        <input className="form-control" type="password" name="password"
-                                                            value={password}
-                                                            onChange={e => setPassword(e.target.value)} />
+                                                        <input className="form-control" type="password" name="password" value={password} onChange={e => setPassword(e.target.value)} />
                                                         {/* {errors.password && 'Email is required'} */}
                                                     </div>
                                                     <div className="checkbox p-0">
@@ -91,4 +131,4 @@ const Signin = ({ history }) => {
     );
 };
 
-export default withRouter(Signin);
+export default Signin;

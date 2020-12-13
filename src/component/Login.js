@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import {Button, Modal} from "react-bootstrap";
-import {Link} from "react-router-dom";
 import SweetAlert from 'react-bootstrap-sweetalert';
 
 import myAPI from '../Api';
@@ -19,11 +18,11 @@ const Login = () => {
   const closeAlert = () => setAlertShow(false);
 
   const onLogin = async() => {
-    if (userEmail == '') {
+    if (userEmail === '') {
       setAlertShow(true);
       setMessage('Please enter the email.');
     }
-    else if (userPassword == '') {
+    else if (userPassword === '') {
       setAlertShow(true);
       setMessage('Please enter the password');
     }
@@ -35,7 +34,10 @@ const Login = () => {
           password: userPassword
         }).then(response => {
           setAlertShow(true);
-          setMessage(response.data.result);
+          if (response.data.success)
+            setMessage('You loggined successfully');
+          else
+            setMessage(response.data.result);
         });
 
       } catch (err) {
@@ -66,11 +68,11 @@ const Login = () => {
           </div>
 
           <div className="mt-3">
-            <Button variant="primary" block onClick={onLogin}>{loading == '' ? 'Login' : 'Processing...'}</Button>
+            <Button variant="primary" block onClick={onLogin}>{loading === '' ? 'Login' : 'Processing...'}</Button>
           </div>
         </Modal.Body>
       </Modal>
-      {/*<Link to={null} onClick={handleShow}>Login</Link>*/}
+
       <span className="login" style={{cursor: `pointer`}} onClick={handleShow}>Login</span>
 
     </React.Fragment>

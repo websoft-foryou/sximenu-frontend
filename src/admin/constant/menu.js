@@ -2,17 +2,17 @@ import { Home, DollarSign, Settings, Server, Edit, Layers } from 'react-feather'
 
 export const MENUITEMS = [
     {
-        title: 'Dashboard', path: '/admin/dashboard', icon: Home, type: 'link', active: false
+        title: 'Dashboard', path: '/admin/dashboard', icon: Home, type: 'link'
     },
     {
-        title: 'Data', icon: Server, type: 'sub', badgeType: 'primary', active: false, children: [
+        title: 'Data', icon: Server, type: 'sub', badgeType: 'primary', children: [
             { path: '/admin/category', title: 'Category', type: 'link' },
             { path: '/admin/product', title: 'Product', type: 'link' },
             { path: '/admin/restuarant', title: 'Restaurant Info', type: 'link' },
         ]
     },
     {
-        title: 'History', path: '/admin/history', icon: Layers, type: 'link', active: false
+        title: 'History', path: '/admin/history', icon: Layers, type: 'link'
     },
 
     {
@@ -23,7 +23,7 @@ export const MENUITEMS = [
         ]
     },
     {
-        title: 'Membership', path: '/admin/membership', icon: DollarSign, type: 'link', active: false
+        title: 'Membership', path: '/admin/membership', icon: DollarSign, type: 'link'
     },
     {
         title: 'Settings', icon: Settings, type: 'sub', active: false, children: [

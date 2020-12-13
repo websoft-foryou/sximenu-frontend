@@ -31,7 +31,7 @@
     "react-google-charts": "^3.0.15",
     "react-icons": "^3.8.0",
     "react-id-swiper": "^2.4.0",
-    "react-images-upload": "^1.2.7",
+    "react-images-upload": "^1.2.8",
     "react-jvectormap": "0.0.15",
     "react-qr-reader": "^2.2.1",
     "react-rating": "^2.0.4",
@@ -75,6 +75,7 @@
     ]
   },
   "devDependencies": {
+    "jwt-decode": "^3.1.2",
     "moment-timezone": "^0.5.32"
   }
 }
