@@ -4,25 +4,27 @@ import Breadcrumb from '../common/breadcrumb';
 import  Bootbox  from  'bootbox-react';
 import ReactTable from "react-table";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import ImageUpload from "../common/imageupload";
+import {toast} from "react-toastify";
+import ImageUploader from "react-images-upload";
 
+import myAPI from "../../../Api";
 import MeatIcon from "../../../assets/img/meat.svg"
 import VeganIcon from "../../../assets/img/vegan.svg"
 import ChiliIcon from "../../../assets/img/chili.svg"
-import BeerIcon from "../../../assets/img/beer.svg"
+import BeerIcon from "../../../assets/img/alcohol.svg"
 
 import 'react-table/react-table.css';
 import 'react-toastify/dist/ReactToastify.css';
 import '../../assets/css/mystyle.css';
-import myAPI from "../../../Api";
-import {toast} from "react-toastify";
-import ImageUploader from "react-images-upload";
+
+
 // reference url: https://developer.aliyun.com/mirror/npm/package/react-table-v6
 
 class Product extends Component {
     constructor(props) {
         super(props);
         this.handleImageUpload = this.handleImageUpload.bind(this);
+        this.handleProductType = this.handleProductType.bind(this);
         this.state = {
             processing: 'Submit',
             loading: false,
@@ -30,29 +32,30 @@ class Product extends Component {
             showModal: false,
             table_data: [],
             category_list: [],
-            product_id: 0,
+            category_id: 0,
             product_name_en: '',
             product_name_hb: '',
             product_description_en: '',
             product_description_hb: '',
             product_price: '',
-            product_type: '',
+            initial_product_type: [],
             initial_image: [],
         };
         this.auth = this.props.auth;
         this.product_image = [];
+        this.product_type = [];
         this.product_id = 0;
     }
 
     componentDidMount() {
-        this.getAllCategories();
+        this.getCategoriesList();
         this.getAllProducts();
     }
 
-    getAllCategories = () => {
+    getCategoriesList = () => {
         this.setState({loading: true});
         try {
-            myAPI.getAllCategories(this.auth.getToken()).then(response => {
+            myAPI.getCategoriesList(this.auth.getToken()).then(response => {
                 if (response.data.success === true)
                     this.setState({category_list: response.data.result});
                 else
@@ -62,7 +65,7 @@ class Product extends Component {
             toast.error(err.message);
         } finally {
             this.setState({loading: false});
-            this.category_id = 0;
+            this.setState({category_id : 0});
         }
     };
 
@@ -70,7 +73,10 @@ class Product extends Component {
         this.setState({loading: true});
         try {
             myAPI.getAllProducts(this.auth.getToken()).then(response => {
-                this.setState({ table_data: response.data.result});
+                if (response.data.success)
+                    this.setState({ table_data: response.data.result});
+                else
+                    toast.error(response.data.result);
             });
         } catch(err) {
             toast.error(err.message);
@@ -98,13 +104,13 @@ class Product extends Component {
                 product_description_hb: this.state.product_description_hb,
                 product_image: this.product_image,
                 product_price: this.state.product_price,
-                product_type: this.state.product_type,
+                product_type: this.product_type,
                 is_freemium: this.auth.isFreemium(),
                 is_premium: this.auth.isPremium()
             }, this.auth.getToken()).then(response => {
                 if (response.data.success === true) {
                     this.toggleModal();
-                    this.getAllCategories();
+                    this.getAllProducts();
                 }
                 else
                     toast.warn(response.data.result);
@@ -115,6 +121,7 @@ class Product extends Component {
             this.setState({processing: 'Submit'});
         }
     };
+
     updateProduct = async() => {
 
         this.setState({processing: 'Updating...'});
@@ -127,13 +134,13 @@ class Product extends Component {
                 product_description_hb: this.state.product_description_hb,
                 product_image: this.product_image,
                 product_price: this.state.product_price,
-                product_type: this.state.product_type,
+                product_type: this.product_type,
                 is_freemium: this.auth.isFreemium(),
                 is_premium: this.auth.isPremium()
             }, this.auth.getToken(), this.product_id).then(response => {
                 if (response.data.success === true) {
                     this.toggleModal();
-                    this.getAllCategories();
+                    this.getAllProducts();
                 }
                 else
                     toast.warn(response.data.result);
@@ -150,7 +157,7 @@ class Product extends Component {
         try {
             await myAPI.removeProduct(this.auth.getToken(), this.product_id).then(response => {
                 if (response.data.success === true)
-                    this.getAllCategories();
+                    this.getAllProducts();
                 else
                     toast.warn(response.data.result);
             });
@@ -173,8 +180,9 @@ class Product extends Component {
             product_description_en: '',
             product_description_hb: '',
             product_price: '',
-            product_type: '',
-            initial_image: []
+            initial_product_type: [],
+            initial_image: [],
+
         });
         this.product_image = [];
         this.product_id = 0;
@@ -183,21 +191,21 @@ class Product extends Component {
 
     editProductModeal = (row) => {
 
-        let image = new Array();
-        image.push(row.original.image);
         this.setState({
             category_id: row.original.category_id,
             product_name_en: row.original.product_name_en,
             product_name_hb: row.original.product_name_hb,
-            product_description_en: row.original.product_name_en,
-            product_description_hb: row.original.product_name_hb,
+            product_description_en: row.original.product_description_en,
+            product_description_hb: row.original.product_description_hb,
             product_price: row.original.product_price,
-            product_type: row.original.product_type,
-            initial_image: image
+            initial_image: row.original.product_image,
+            initial_product_type: row.original.product_type
         });
-        //console.log(row.original.image);
-        this.product_image = image;
+
+        this.product_image = row.original.product_image;
         this.product_id = row.original.product_id;
+        this.product_type = row.original.product_type;
+
         this.toggleModal();
 
     };
@@ -211,57 +219,76 @@ class Product extends Component {
         this.product_image = pictureDataURLs;
     }
 
+    handleProductType(checked, value) {
+        if (checked) {
+            let new_product_type = this.product_type.concat(value);
+            this.product_type =  new_product_type;
+        }
+        else {
+            let new_product_type = this.product_type.filter(function(item) {
+                return item !== value;
+            })
+            this.product_type =  new_product_type;
+        }
+        this.setState({initial_product_type: this.product_type});
+    }
+
     render() {
         const columns = [
-            { Header: 'Category', accessor: 'category_name', filterable: true, style: { textAlign: 'center'} },
-            { Header: 'Product (EN)', accessor: 'product_name_en', filterable: true, style: { textAlign: 'center'} },
-            { Header: 'Product (HB)', accessor: 'product_name_hb', filterable: true, style: { textAlign: 'center'} },
-            { Header: 'Price($)', accessor: 'product_price', filterable: true, style: { textAlign: 'center'} },
+            { Header: 'Category', accessor: 'category_name', filterable: false, style: { textAlign: 'center'} },
+            { Header: 'Product (EN)', accessor: 'product_name_en', filterable: false, style: { textAlign: 'center'} },
+            { Header: 'Product (HB)', accessor: 'product_name_hb', filterable: false, style: { textAlign: 'center'} },
+            { Header: 'Price($)', accessor: 'product_price', filterable: false, style: { textAlign: 'center'} },
             { Header: 'Images', accessor: 'product_image', filterable: false, style: { textAlign: 'center'},
-                Cell: props => {
-                    var image_elements = props.value.map((img_name) => {
-                        return (<img src={require('../../assets/uploads/' + img_name)} key={img_name} alt={''}/>)
-                    })
-                    return (<div className="product_list_thumbnail">{image_elements}</div>);
-
+                Cell: row => {
+                    var image_element = row.original.product_image.map((img_data, index) => {
+                        return <img src={img_data} style={{height: `30px`}} key={`product_image_${row.index}_${index}`} alt="Product"/>
+                    });
+                    if (row.original.product_image.length == 1 && row.original.product_image[0] === "")
+                        return (<div className="product_list_thumbnail">- no image -</div>)
+                    else
+                        return (<div className="product_list_thumbnail">{image_element}</div>)
                 }
             },
             { Header: 'Product Type', accessor: 'product_type', filterable: false, style: { textAlign: 'center'},
-                Cell: props => {
-                    var image_elements = props.value.map((img_name) => {
-                        return (<img src={require('../../../assets/img/' + img_name)} key={img_name} alt={''}/>)
-                    })
+                Cell: row => {
+                    var image_elements = row.original.product_type.map((type_name) => {
+                        return (<img src={require('../../../assets/img/' + type_name + '.svg')} key={type_name + row.index} alt={''}/>)
+                    });
                     return (<div className="product_type_thumbnail">{image_elements}</div>);
                 }
             },
             { Header: 'Action', accessor: 'product_id', filterable: false, style: { textAlign: 'center'},
-                Cell: props =>
+                Cell: row =>
                     <div>
-                        <span className='datamng-control edit' >
+                        <span className='datamng-control edit' onClick={() => this.editProductModeal(row) } >
                             <i className="fa fa-pencil" style={{ width: 35, fontSize: 16, padding: 11, color: 'rgb(40, 167, 69)' }}></i>
                         </span>
-                        <span className='datamng-control delete' onClick={() => this.setShowConfirm(1)}>
+                        <span className='datamng-control delete'  onClick={() => this.toggleConfirm(row)} >
                             <i className="fa fa-trash" style={{ width: 35, fontSize: 16, padding: 11, color: '#e4566e' }}></i>
                         </span>
                     </div>
             }
         ];
 
-        const data = [
-            {
-                category : "test category",
-                name_en: "test product en",
-                name_hb: "test product hb",
-                price: 100,
-                image: ['download-1.jpg', 'download-2.jpg', 'download-3.jpg'],
-                product_type: ['meat.svg', 'vegan.svg', 'chili.svg'],
-                actions: "4"
-            }
-        ];
 
         return (
             <Fragment>
                 <Breadcrumb title="Product" parent="Data" />
+                {this.state.loading &&
+                <div id="myOverlay" className="overlay">
+                    <div className="overlay-content">
+                        <div className="loader-box" style={{display: "block"}}>
+                            <div className="loader">
+                                <div className="line bg-warning"></div>
+                                <div className="line bg-warning"></div>
+                                <div className="line bg-warning"></div>
+                                <div className="line bg-warning"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-sm-12">
@@ -294,13 +321,13 @@ class Product extends Component {
                             <div className="form-row">
                                 <div className="col-12">
                                     <div className="form-group">
-                                        <label htmlFor="cbo_category">Category: </label>
-                                        <select className="form-control digits" id="cbo_category">
-                                            <option>Product 1</option>
-                                            <option>Product 2</option>
-                                            <option>Product 3</option>
-                                            <option>Product 4</option>
-                                            <option>Product 5</option>
+                                        <label htmlFor="category_list">Category: </label>
+                                        <select className="form-control digits" value={this.state.category_id} onChange={e => this.setState({ category_id: e.target.value })}>
+                                            {
+                                                this.state.category_list.map((category, index) => {
+                                                    return <option value={category.id} key={index}>{category.name_en}</option>
+                                                })
+                                            }
                                         </select>
                                     </div>
                                 </div>
@@ -309,13 +336,19 @@ class Product extends Component {
                                 <div className="col-12 col-lg-6">
                                     <div className="form-group">
                                         <label className="col-form-label" htmlFor="product_name_en">Product Name (EN):</label>
-                                        <input className="form-control" type="text" placeholder="" />
+                                        <input className="form-control" type="text" placeholder="" value={this.state.product_name_en} onChange={e => this.setState({ product_name_en: e.target.value })}/>
                                     </div>
                                 </div>
                                 <div className="col-12 col-lg-6">
                                     <div className="form-group">
                                         <label className="col-form-label" htmlFor="product_name_hb">Product Name (HB):</label>
-                                        <input className="form-control" type="text" placeholder="" />
+                                        {this.auth.isFreemium() &&
+                                            <span className="freemium">* You are Freemium. So can not edit this field.</span>
+                                        }
+                                        {this.auth.isPremium() &&
+                                            <input className="form-control" type="text" placeholder="" value={this.state.product_name_hb}
+                                                   onChange={e => this.setState({product_name_hb: e.target.value})}/>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -324,7 +357,8 @@ class Product extends Component {
                                 <div className="col-12">
                                     <div className="form-group">
                                         <label className="col-form-label" htmlFor="product_description_en">Product Description (EN):</label>
-                                        <textarea className="form-control" id="product_description_en"></textarea>
+                                        <textarea className="form-control" value={this.state.product_description_en}
+                                                  onChange={e => this.setState({ product_description_en: e.target.value})}></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -333,7 +367,13 @@ class Product extends Component {
                                 <div className="col-12">
                                     <div className="form-group">
                                         <label className="col-form-label" htmlFor="product_description_hb">Product Description (HB):</label>
-                                        <textarea className="form-control" id="product_description_hb"></textarea>
+                                        {this.auth.isFreemium() &&
+                                        <span className="freemium">* You are Freemium. So can not edit this field.</span>
+                                        }
+                                        {this.auth.isPremium() &&
+                                        <textarea className="form-control" value={this.state.product_description_hb}
+                                                  onChange={e => this.setState({product_description_hb: e.target.value})}></textarea>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -342,16 +382,21 @@ class Product extends Component {
                                 <div className="col-12">
                                     <div className="form-group">
                                         <label className="col-form-label" htmlFor="product_image">Product Image:</label>
+                                        { this.auth.isFreemium() &&
+                                        <span className="freemium">* You are Freemium. So can not upload image.</span>
+                                        }
+                                        {this.auth.isPremium() &&
                                         <ImageUploader
                                             withIcon={false}
                                             withPreview={true}
-                                            singleImage={true}
+                                            singleImage={false}
                                             buttonText='Choose images'
                                             defaultImages={this.state.initial_image}
                                             imgExtension={['.jpg', '.gif', '.png', '.gif']}
                                             maxFileSize={5242880}
                                             onChange={this.handleImageUpload}
                                         />
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -360,7 +405,7 @@ class Product extends Component {
                                 <div className="col-12 col-lg-4">
                                     <div className="form-group">
                                         <label className="col-form-label" htmlFor="product_name_hb">Price($):</label>
-                                        <input className="form-control" type="number" placeholder="" />
+                                        <input className="form-control" type="number" placeholder="" value={this.state.product_price} onChange={e => this.setState({product_price: e.target.value})}/>
                                     </div>
                                 </div>
                                 <div className="col-12 col-lg-7 ml-4">
@@ -369,19 +414,19 @@ class Product extends Component {
                                     </div>
                                     <div className="form-group m-checkbox-inline mb-0 ml-1">
                                         <div className="checkbox checkbox-dark">
-                                            <input id="inline-1" type="checkbox"/>
+                                            <input id="inline-1" type="checkbox" checked={this.state.initial_product_type.includes('meat') ? true : false} onChange={e => this.handleProductType(e.target.checked, 'meat')} />
                                             <label htmlFor="inline-1"><img src={MeatIcon} style={{ height: '25px', marginTop: '-15px'}} alt={''}/></label>
                                         </div>
                                         <div className="checkbox checkbox-dark">
-                                            <input id="inline-2" type="checkbox"/>
+                                            <input id="inline-2" type="checkbox" checked={this.state.initial_product_type.includes('vegan') ? true : false} onChange={e => this.handleProductType(e.target.checked, 'vegan')} />
                                             <label htmlFor="inline-2"><img src={VeganIcon} style={{ height: '25px', marginTop: '-15px'}} alt={''}/></label>
                                         </div>
                                         <div className="checkbox checkbox-dark">
-                                            <input id="inline-3" type="checkbox"/>
+                                            <input id="inline-3" type="checkbox" checked={this.state.initial_product_type.includes('chili') ? true : false} onChange={e => this.handleProductType(e.target.checked, 'chili')} />
                                             <label htmlFor="inline-3"><img src={ChiliIcon} style={{ height: '25px', marginTop: '-15px'}} alt={''}/></label>
                                         </div>
                                         <div className="checkbox checkbox-dark">
-                                            <input id="inline-4" type="checkbox"/>
+                                            <input id="inline-4" type="checkbox" checked={this.state.initial_product_type.includes('alcohol') ? true : false} onChange={e => this.handleProductType(e.target.checked, 'alcohol')} />
                                             <label htmlFor="inline-4"><img src={BeerIcon} style={{ height: '25px', marginTop: '-15px'}} alt={''}/></label>
                                         </div>
                                     </div>
@@ -391,7 +436,7 @@ class Product extends Component {
                     </ModalBody>
                     <ModalFooter>
                         <Button color="secondary" onClick={() => this.toggleModal()}>Cancel</Button>
-                        <Button color="primary">Submit</Button>
+                        <Button color="primary" onClick={() => this.saveData()}>{this.state.processing}</Button>
                     </ModalFooter>
                 </Modal>
 
@@ -399,7 +444,7 @@ class Product extends Component {
                          type={"confirm"}
                          message={"The product will be removed. Are you sure?"}
                          onSuccess={() => this.removeProduct()}
-                         onClose={() => this.setState({showConfirm: false})}
+                         onCancel={() => this.setState({showConfirm: false})}
                 />
             </Fragment>
 

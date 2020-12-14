@@ -99,7 +99,7 @@ const Signin = () => {
                                                 </div>
                                                 <form className="theme-form" >
                                                     <div className="form-group">
-                                                        <label className="col-form-label pt-0">Your Name</label>
+                                                        <label className="col-form-label pt-0">Your Email</label>
                                                         <input className="form-control" type="email" name="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email address" />
                                                         {/* {errors.email && 'Email is required'} */}
                                                     </div>

@@ -1,4 +1,7 @@
 /* BEGIN(data table) */
+.rt-table .rt-thead {
+    font-weight: 600;
+}
 .rt-table .rt-td .fa.fa-trash, .rt-table .rt-td .fa.fa-pencil {
     cursor:pointer;
 }
@@ -19,12 +22,13 @@
     height: 40px;
     border-radius: 5px;
     margin-right: 5px;
+    border: 1px solid #e8e8e7;
 }
 
 .product_type_thumbnail img{
     height: 30px;
     margin-right: 10px;
-    border: 1px solid #ff9f40ad;
+    border: 1px solid #e8e8e7e0;
     border-radius: 50%;
     padding: 3px;
 }

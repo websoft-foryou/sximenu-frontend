@@ -1,4 +1,4 @@
-import React, { Fragment, Component, useEffect } from 'react';
+import React, { Fragment, Component } from 'react';
 import Breadcrumb from '../common/breadcrumb';
 
 import  Bootbox  from  'bootbox-react';
@@ -140,7 +140,7 @@ class Category extends Component {
 
     editCategoryModeal = (row) => {
 
-        let image = new Array();
+        let image = [];
         image.push(row.original.image);
         this.setState({
             category_name_en: row.original.category_name_en,
@@ -167,17 +167,17 @@ class Category extends Component {
 
         const columns = [
             { Header: 'Image', accessor: 'image', filterable: false, style: { textAlign: 'center'},
-                Cell: row => <img src={row.original.image} style={{height: `30px`}} />
+                Cell: row => <img src={row.original.image} style={{height: `30px`}} alt="Category"/>
             },
-            { Header: 'Name (EN)', accessor: 'category_name_en', filterable: true, style: { textAlign: 'center'} },
-            { Header: 'Name (HB)', accessor: 'category_name_hb', filterable: true, style: { textAlign: 'center'} },
+            { Header: 'Name (EN)', accessor: 'category_name_en', filterable: false, style: { textAlign: 'center'} },
+            { Header: 'Name (HB)', accessor: 'category_name_hb', filterable: false, style: { textAlign: 'center'} },
             { Header: 'Action', accessor: 'category_id', filterable: false, style: { textAlign: 'center'},
                 Cell: row =>
                     <div>
                         <span className='datamng-control edit' onClick={() => this.editCategoryModeal(row) }>
                             <i className="fa fa-pencil" style={{ width: 35, fontSize: 16, padding: 11, color: 'rgb(40, 167, 69)' }}></i>
                         </span>
-                        <span className='datamng-control delete' onClick={() => this.toggleConfirm(row, true)}>
+                        <span className='datamng-control delete' onClick={() => this.toggleConfirm(row)}>
                             <i className="fa fa-trash" style={{ width: 35, fontSize: 16, padding: 11, color: '#e4566e' }}></i>
                         </span>
                     </div>
@@ -276,7 +276,7 @@ class Category extends Component {
                          type={"confirm"}
                          message={"The category will be removed. Are you sure?"}
                          onSuccess={() => this.removeCategory()}
-                         onClose={() => this.setState({showConfirm: false})}
+                         onCancel={() => this.setState({showConfirm: false})}
                 />
 
             </Fragment>
