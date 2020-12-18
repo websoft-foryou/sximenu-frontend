@@ -15,11 +15,12 @@ const mapStyles = {
 class GoogleMaps extends Component {
   constructor(props) {
     super(props);
-    this.setLocationInfo = this.setLocationInfo.bind(this);
+    this.handleLocationInfo = this.handleLocationInfo.bind(this);
     this.state = {
-      location: '',
-      fullAddress: ''
+      location: this.props.locationValue,
+      fullAddress: this.props.locationValue.position
     }
+
   }
 
   googleMapRef = React.createRef();
@@ -35,19 +36,32 @@ class GoogleMaps extends Component {
     })
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.locationValue.position !== nextProps.locationValue.position) {
+      this.setState({
+        location: nextProps.locationValue,
+        fullAddress: nextProps.locationValue.position
+      }, () => {
+        this.googleMap = this.mapInitialize();
+      });
+
+    }
+  }
+
+
   mapInitialize = () => {
     let map = new window.google.maps.Map(this.googleMapRef.current, {
       zoom: 8,
       center: {
-        lat: myLocation.lat,
-        lng: myLocation.lng
+        lat: parseFloat(this.state.location.latitude),
+        lng: parseFloat(this.state.location.longitude)
       },
       gestureHandling: 'cooperative'
     });
 
     let marker = this.createMarker(map, {
-      lat: myLocation.lat,
-      lng: myLocation.lng
+      lat: parseFloat(this.state.location.latitude),
+      lng: parseFloat(this.state.location.longitude)
     });
 
     this.markerDraggable(map, marker);
@@ -66,7 +80,9 @@ class GoogleMaps extends Component {
           marker.setMap(null);
           this.createMarker(map, place.geometry.location);
           this.markerDraggable(map, marker);
-          this.setLocationInfo(location_info);
+          // console.log('location info = ');
+          // console.log(location_info);
+          this.handleLocationInfo(location_info);
         });
 
 
@@ -89,13 +105,13 @@ class GoogleMaps extends Component {
         this.setState({fullAddress: location_info.addr}, () => {
 
         });
-        this.setLocationInfo(location_info);
+        this.handleLocationInfo(location_info);
       });
 
     });
   };
 
-  setLocationInfo = (location_info) => {
+  handleLocationInfo = (location_info) => {
     this.props.onChangeLocation(location_info);
   };
 
@@ -106,9 +122,9 @@ class GoogleMaps extends Component {
       }, function (results, status) {
         if (status === window.google.maps.GeocoderStatus.OK) {
           map.panTo(results[0].geometry.location);
-          console.log('formatted address=' + results[0].formatted_address);
-          console.log('lat = ' + results[0].geometry.location.lat());
-          console.log('lng = ' + results[0].geometry.location.lng());
+          //console.log('formatted address=' + results[0].formatted_address);
+          //console.log('lat = ' + results[0].geometry.location.lat());
+          //console.log('lng = ' + results[0].geometry.location.lng());
           var location_info = {
             addr: results[0].formatted_address,
             lat: results[0].geometry.location.lat(),
@@ -125,8 +141,8 @@ class GoogleMaps extends Component {
   handleOnchangeInput = (e) => {
     console.log('my location = ' + e.target.value);
     this.setState({[e.target.name]: e.target.value, fullAddress: e.target.value}, () => {
-      console.log('= state = ')
-      console.log(this.state);
+      // console.log('= state = ')
+      // console.log(this.state);
     });
   };
 

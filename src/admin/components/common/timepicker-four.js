@@ -34,6 +34,7 @@ class TimePickerFour extends React.Component {
         } = options;
 
         this.setState({ hour, minute, meridiem });
+        this.props.onValueChange(hour, minute);
     }
 
     onFocusChange(focused) {
@@ -85,7 +86,7 @@ class TimePickerFour extends React.Component {
 
     render() {
         const { hour, minute, } = this.state;
-        const {isDisabled} = this.props;
+        const {isDisabled, timeValue} = this.props;
         var time = hour && minute ? `${hour}:${minute}` : null;
         if (isDisabled) time = '--:--';
 
@@ -100,7 +101,7 @@ class TimePickerFour extends React.Component {
                     theme="classic"
                     onTimeChange={this.onTimeChange}
                     showTimezone={true}
-                    time={time}
+                    time={timeValue}
                 />
             // </div>
         );

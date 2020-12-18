@@ -244,7 +244,7 @@ class Product extends Component {
                     var image_element = row.original.product_image.map((img_data, index) => {
                         return <img src={img_data} style={{height: `30px`}} key={`product_image_${row.index}_${index}`} alt="Product"/>
                     });
-                    if (row.original.product_image.length == 1 && row.original.product_image[0] === "")
+                    if (row.original.product_image.length === 1 && row.original.product_image[0] === "")
                         return (<div className="product_list_thumbnail">- no image -</div>)
                     else
                         return (<div className="product_list_thumbnail">{image_element}</div>)

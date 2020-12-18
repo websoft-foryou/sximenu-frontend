@@ -65,5 +65,15 @@ export default {
     removeProduct:(token, id) =>
         axios.delete(`${BASE_API_URL}/remove_product/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
-        })
+        }),
+
+    // restaurant information
+    getRestaurantInformation:(token) =>
+        axios.get(`${BASE_API_URL}/get_restaurant`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+    saveRestaurantInformation:(restaurant, token) =>
+        axios.put(`${BASE_API_URL}/update_restaurant`, restaurant, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
 }
