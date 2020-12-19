@@ -76,4 +76,38 @@ export default {
         axios.put(`${BASE_API_URL}/update_restaurant`, restaurant, {
             headers: { Authorization: `Bearer ${token}` }
         }),
+
+    // user history
+    getHistoryData:(token) =>
+        axios.get(`${BASE_API_URL}/get_history`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+
+    // user analytics
+    getUserDailyAnalyticsData:(token, year, month) =>
+        axios.get(`${BASE_API_URL}/get_user_daily_analytics_data/${year}/${month}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+    getUserWeeklyAnalyticsData:(token, year, month) =>
+        axios.get(`${BASE_API_URL}/get_user_weekly_analytics_data/${year}/${month}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+    getUserMonthlyAnalyticsData:(token, year) =>
+        axios.get(`${BASE_API_URL}/get_user_monthly_analytics_data/${year}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+
+    // Income analytics
+    getIncomeDailyAnalyticsData:(token, year, month) =>
+        axios.get(`${BASE_API_URL}/get_income_daily_analytics_data/${year}/${month}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+    getIncomeWeeklyAnalyticsData:(token, year, month) =>
+        axios.get(`${BASE_API_URL}/get_income_weekly_analytics_data/${year}/${month}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+    getIncomeMonthlyAnalyticsData:(token, year) =>
+        axios.get(`${BASE_API_URL}/get_income_monthly_analytics_data/${year}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
 }

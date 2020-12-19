@@ -79,12 +79,12 @@ const Admin = () => {
                                 <>
                                     <PrivateRoute path="/admin/dashboard" component={UserDashboard}/>
                                     <PrivateRoute path="/admin/category" component={() => <Category auth={Auth} />} />
-                                    <PrivateRoute path="/admin/product" component={() => <Product auth={Auth} />}/>
-                                    <PrivateRoute path="/admin/restuarant" component={() => <Restaurant auth={Auth} />}/>
+                                    <PrivateRoute path="/admin/product" component={() => <Product auth={Auth} />} />
+                                    <PrivateRoute path="/admin/restuarant" component={() => <Restaurant auth={Auth} />} />
 
-                                    <PrivateRoute path="/admin/history" component={UserHistory}/>
-                                    <PrivateRoute path="/admin/user_analytics" component={UserAnalytics}/>
-                                    <PrivateRoute path="/admin/income_analytics" component={IncomeAanalytics}/>
+                                    <PrivateRoute path="/admin/history" component={() => <UserHistory auth={Auth} />} />
+                                    <PrivateRoute path="/admin/user_analytics" component={() => <UserAnalytics auth={Auth} />}/>
+                                    <PrivateRoute path="/admin/income_analytics" component={() => <IncomeAanalytics auth={Auth} />}/>
 
                                     <PrivateRoute path="/admin/membership" component={Pricing}/>
                                     <PrivateRoute path="/admin/email_setting" component={EmailSetting}/>

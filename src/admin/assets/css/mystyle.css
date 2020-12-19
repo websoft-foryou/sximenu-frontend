@@ -121,3 +121,19 @@
     display: block;
     color: red;
 }
+
+
+/* BEGIN(history) */
+.iconBrowse {
+    color: #019af7;
+}
+.iconNew {
+    color: #f3a91d;
+}
+.iconUpdate {
+    color: #269a02;
+}
+.iconDelete {
+    color: #f31d1d;
+}
+/* END */

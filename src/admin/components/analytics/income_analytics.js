@@ -1,18 +1,73 @@
-import React, { Fragment } from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import Breadcrumb from '../common/breadcrumb';
 import { Line } from 'react-chartjs-2';
 
 import configDB from '../../config';
+import myAPI from "../../../Api";
+import {toast} from "react-toastify";
 
 var primary = localStorage.getItem('primary_color') || configDB.data.color.primary_color;
-const IncomeAanalytics = () => {
+const IncomeAanalytics = (props) => {
+
+    const this_year = new Date().getFullYear();
+    const this_month = new Date().getMonth() + 1;
+    const [dailyData, setDailyData] = useState([]);
+    const [dailyYear, setDailyYear] = useState(this_year);
+    const [dailyMonth, setDailyMonth] = useState(this_month);
+
+    const [weeklyData, setWeeklyData] = useState([]);
+    const [weeklyYear, setWeeklyYear] = useState(this_year);
+    const [weeklyMonth, setWeeklyMonth] = useState(this_month);
+
+    const [monthlyData, setMonthlyData] = useState([]);
+    const [monthlyYear, setMonthlyYear] = useState(this_year);
+
+    const [loading, setLoading] = useState(false);
+    const auth = props.auth;
+
+    const daysInMonth = (year, month) => {
+        return new Date(year, month, 0).getDate();
+    };
+
+    const weeksInMonth = (year, month) => {
+        let now = new Date();
+        let onejan = new Date(now.getFullYear(), 0, 1);
+        let first_date = new Date(now.getFullYear(), month - 1, 1);
+        let week_start = Math.ceil( (((first_date.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7 );
+
+        let last_date = new Date(now.getFullYear(), month-1, daysInMonth(year, month));
+        let week_end = Math.ceil( (((last_date.getTime() - onejan.getTime()) / 86400000) + onejan.getDay() + 1) / 7 );
+
+        return week_end - week_start + 1;
+    };
+
+    let year_array = [];
+    for (let i = this_year - 3; i <= this_year + 3; i ++) {
+        year_array.push(i);
+    }
+
+    let dailyDataLabels = [];
+    for (let i = 1; i <= daysInMonth(dailyYear, dailyMonth); i ++) {
+        dailyDataLabels.push(i);
+    }
+
+    let weeklyDataLabels = [];
+    for (let i = 1; i <= weeksInMonth(weeklyYear, weeklyMonth); i ++) {
+        weeklyDataLabels.push(i);
+    }
+
+    useEffect(() => {
+        getDailyAnalyticsData(this_year, this_month);
+        getWeeklyAnalyticsData(this_year, this_month);
+        getMonthlyAnalyticsData(this_year);
+    }, []);
 
     const dailyChartData = {
-        labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"],
+        labels: dailyDataLabels,
         datasets: [
             {
                 lagend: 'none',
-                data: [0, 1000, 2000, 5000, 4500, 4800, 3000, 500, 6700, 5000, 3300, 4500, 4500, 4800, 3000, 500, 6700, 5000, 3300, 4500, 4500, 4800, 3000, 500, 6700, 5000, 3300, 4500, 1000, 12000, 2400],
+                data: dailyData,
                 borderColor: primary,
                 pointBackgroundColor: primary,
                 backgroundColor: "transparent",
@@ -22,11 +77,11 @@ const IncomeAanalytics = () => {
     };
 
     const weeklyChartData = {
-        labels: ["1", "2", "3", "4", "5"],
+        labels: weeklyDataLabels,
         datasets: [
             {
                 lagend: 'none',
-                data: [6200, 7000, 8000, 9000, 9500],
+                data: weeklyData,
                 borderColor: primary,
                 pointBackgroundColor: primary,
                 backgroundColor: "transparent",
@@ -40,7 +95,7 @@ const IncomeAanalytics = () => {
         datasets: [
             {
                 lagend: 'none',
-                data: [16200, 17000, 18000, 19000, 19500, 19500, 18000, 17000, 19000, 21000, 6700, 6700],
+                data: monthlyData,
                 borderColor: primary,
                 pointBackgroundColor: primary,
                 backgroundColor: "transparent",
@@ -71,6 +126,75 @@ const IncomeAanalytics = () => {
         }
     }
 
+    const getDailyAnalyticsData = (year, month) => {
+        setLoading(true);
+        try {
+            myAPI.getIncomeDailyAnalyticsData(auth.getToken(), year, month).then(response => {
+                if (response.data.success) {
+                    let arr = [];
+                    let result = response.data.result;
+                    for(const key in result) {
+                        arr.push(result[key]);
+                    }
+                    setDailyData( arr);
+                }
+                else
+                    toast.error(response.data.result);
+            });
+
+        } catch(e) {
+            toast.error(e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getWeeklyAnalyticsData = (year, month) => {
+        setLoading(true);
+        try {
+            myAPI.getIncomeWeeklyAnalyticsData(auth.getToken(), year, month).then(response => {
+                if (response.data.success) {
+                    let arr = [];
+                    let result = response.data.result;
+                    for(const key in result) {
+                        arr.push(result[key]);
+                    }
+                    setWeeklyData( arr );
+                }
+                else
+                    toast.error(response.data.result);
+            });
+
+        } catch(e) {
+            toast.error(e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getMonthlyAnalyticsData = (year) => {
+        setLoading(true);
+        try {
+            myAPI.getIncomeMonthlyAnalyticsData(auth.getToken(), year).then(response => {
+                if (response.data.success) {
+                    let arr = [];
+                    let result = response.data.result;
+                    for(const key in result) {
+                        arr.push(result[key]);
+                    }
+                    setMonthlyData( arr );
+                }
+                else
+                    toast.error(response.data.result);
+            });
+
+        } catch(e) {
+            toast.error(e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <Fragment>
             <Breadcrumb title="Income Analytics" parent="Analytics" />
@@ -82,7 +206,7 @@ const IncomeAanalytics = () => {
                                 <h5 className="float-left">Income per daily</h5>
 
                                 <div className="float-right">
-                                    <select className="form-control " id="cbo_daily_month" placeholder={`Month`}>
+                                    <select className="form-control " placeholder={`Month`} defaultValue={this_month}  onChange={ e => { setDailyMonth(e.target.value); getDailyAnalyticsData(dailyYear, e.target.value)} }>
                                         <option>Jan</option>
                                         <option>Feb</option>
                                         <option>Mar</option>
@@ -98,10 +222,12 @@ const IncomeAanalytics = () => {
                                     </select>
                                 </div>
                                 <div className="float-right m-r-10">
-                                    <select className="form-control " id="cbo_daily_year" placeholder={`Year`}>
-                                        <option>2020</option>
-                                        <option>2019</option>
-                                        <option>2018</option>
+                                    <select className="form-control " placeholder={`Year`} defaultValue={this_year} onChange={e => { setDailyYear(e.target.value); getDailyAnalyticsData(e.target.value, dailyMonth)} }>
+                                        {
+                                            year_array.map((year) => {
+                                                return <option key={`daily_${year}`} >{year}</option>
+                                            })
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -123,7 +249,7 @@ const IncomeAanalytics = () => {
                                 <h5 className="float-left">Income per weekly</h5>
 
                                 <div className="float-right">
-                                    <select className="form-control " id="cbo_weekly_month" placeholder={`Month`}>
+                                    <select className="form-control " placeholder={`Month`} defaultValue={this_month}  onChange={ e => { setWeeklyMonth(e.target.value); getWeeklyAnalyticsData(weeklyYear, e.target.value)} }>
                                         <option>Jan</option>
                                         <option>Feb</option>
                                         <option>Mar</option>
@@ -139,10 +265,12 @@ const IncomeAanalytics = () => {
                                     </select>
                                 </div>
                                 <div className="float-right m-r-10">
-                                    <select className="form-control " id="cbo_weekly_year" placeholder={`Year`}>
-                                        <option>2020</option>
-                                        <option>2019</option>
-                                        <option>2018</option>
+                                    <select className="form-control " placeholder={`Year`} defaultValue={this_year} onChange={e => { setWeeklyYear(e.target.value); getWeeklyAnalyticsData(e.target.value, weeklyMonth)} }>
+                                        {
+                                            year_array.map((year) => {
+                                                return <option key={`weekly_${year}`} >{year}</option>
+                                            })
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -164,10 +292,12 @@ const IncomeAanalytics = () => {
                                 <h5 className="float-left">Income per monthly</h5>
 
                                 <div className="float-right m-r-10">
-                                    <select className="form-control " id="cbo_monthly_year" placeholder={`Year`}>
-                                        <option>2020</option>
-                                        <option>2019</option>
-                                        <option>2018</option>
+                                    <select className="form-control " placeholder={`Year`} defaultValue={this_year} onChange={e => { setMonthlyYear(e.target.value); getMonthlyAnalyticsData(e.target.value)} }>
+                                        {
+                                            year_array.map((year) => {
+                                                return <option key={`weekly_${year}`} >{year}</option>
+                                            })
+                                        }
                                     </select>
                                 </div>
                             </div>

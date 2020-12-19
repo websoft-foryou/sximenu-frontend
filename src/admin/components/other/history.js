@@ -1,50 +1,78 @@
-import React, { Fragment, Component } from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import Breadcrumb from '../common/breadcrumb';
 
 import ReactTable from "react-table";
 
+import myAPI from "../../../Api";
 import 'react-table/react-table.css';
 import 'react-toastify/dist/ReactToastify.css';
 import '../../assets/css/mystyle.css';
+import {toast} from "react-toastify";
 
-const UserHistory = () => {
+const UserHistory = (props) => {
+    const [loading, setLoading] = useState(false);
+    const [tableData, setTableData] = useState([]);
+    const auth = props.auth;
+
     const columns = [
         { Header: 'Date Time', accessor: 'date_time', filterable: true, style: { textAlign: 'center'} },
-        { Header: 'Action', accessor: 'action', filterable: true, style: { textAlign: 'center'} },
+        { Header: 'Action', accessor: 'action', filterable: true, style: { textAlign: 'center'},
+            Cell: row => {
+                let icon = '';
+                let iconClass = 'icon' + row.original.action;
+                if (row.original.action === 'Browse') icon = 'icofont icofont-globe-alt';
+                if (row.original.action === 'New') icon = 'icofont icofont-paper';
+                if (row.original.action === 'Update') icon = 'icofont icofont-pencil-alt-5';
+                if (row.original.action === 'Delete') icon = 'icofont icofont-ui-remove';
+                return (<div><i className={`${icon} ${iconClass}`}></i> {row.original.action}</div>)
+            }
+        },
         { Header: 'Section', accessor: 'section', filterable: true, style: { textAlign: 'center'} },
         { Header: 'Original Value', accessor: 'original_value', filterable: true, style: { textAlign: 'center'} },
         { Header: 'New Value', accessor: 'new_value', filterable: true, style: { textAlign: 'center'} }
     ];
-    const data = [
-        {
-            date_time : "2020-12-01 12:20:12",
-            action: "Update",
-            section: "Category Name",
-            original_value: "aaa",
-            new_value: "bbb"
-        },
-        {
-            date_time : "2020-12-01 12:40:12",
-            action: "New",
-            section: "Product",
-            original_value: "",
-            new_value: "mmmm"
-        },
-        {
-            date_time : "2020-12-01 13:02:12",
-            action: "Delete",
-            section: "Product",
-            original_value: "hhh",
-            new_value: ""
-        }
-    ];
 
-    console.log(data);
+    useEffect(() => {
+        getHistoryData();
+    }, []);
+
+    const getHistoryData = async() => {
+        setLoading(true)
+        try {
+            await myAPI.getHistoryData(auth.getToken()).then(response => {
+                if (response.data.success) {
+                    setTableData( response.data.result);
+                }
+                else
+                    toast.error(response.data.result);
+
+            });
+
+        } catch(e) {
+            toast.error(e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
     return (
         <Fragment>
             <Breadcrumb title="" parent="History" />
+            {loading &&
+            <div id="myOverlay" className="overlay">
+                <div className="overlay-content">
+                    <div className="loader-box" style={{display: "block"}}>
+                        <div className="loader">
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-12">
@@ -54,7 +82,7 @@ const UserHistory = () => {
                             </div>
                             <div className="card-body datatable-react">
                                 <ReactTable
-                                    data={data}
+                                    data={tableData}
                                     columns={columns}
                                     defaultPageSize={10}
                                     className={'-striped -highlight'}
