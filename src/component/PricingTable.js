@@ -3,7 +3,7 @@ import "../assets/scss/pricing-table.scss";
 import {Button} from "react-bootstrap";
 import {FaCheck, FaTimes} from "react-icons/fa";
 
-const PricingTable = function ({plan, price, shortText, planPeriod, featureList, isFeatured, handleSelectPlan}) {
+const PricingTable = function ({plan, price, shortText, planPeriod, featureList, isFeatured, isPurchased, handleSelectPlan}) {
   return (
     <div className={isFeatured ? 'pricing-table highlight' : 'pricing-table'}>
       <div className="table-header">
@@ -24,11 +24,18 @@ const PricingTable = function ({plan, price, shortText, planPeriod, featureList,
           )
         })}
       </ul>
+      {isPurchased &&
+        <div className="purchased">You have <b>{plan}</b> now.</div>
+      }
+      {!isPurchased &&
       <div className="action">
         <Button
-          onClick={() => handleSelectPlan(price)}
-          variant={isFeatured ? 'secondary' : 'primary'} block>Get Started</Button>
+            onClick={() => handleSelectPlan(price)}
+            variant={isFeatured ? 'success' : 'success'} block>Get Started</Button>
       </div>
+      }
+
+
     </div>
   )
 };

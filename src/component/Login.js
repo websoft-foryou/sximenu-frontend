@@ -1,11 +1,14 @@
 import React, {useState} from "react";
 import {Button, Modal} from "react-bootstrap";
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { useHistory } from 'react-router-dom';
 
 import myAPI from '../Api';
 import '../admin/assets/css/mystyle.css';
 
 const Login = () => {
+  const history = useHistory();
+
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
@@ -14,7 +17,10 @@ const Login = () => {
   const [message, setMessage] = useState('');
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    history.push('/admin/login');
+    //setShow(true);
+  }
   const closeAlert = () => setAlertShow(false);
 
   const onLogin = async() => {

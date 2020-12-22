@@ -5,6 +5,7 @@ import { Line } from 'react-chartjs-2';
 import configDB from '../../config';
 import myAPI from "../../../Api";
 import {toast} from "react-toastify";
+import UnlockButton from "../common/unlockButton";
 
 var primary = localStorage.getItem('primary_color') || configDB.data.color.primary_color;
 const IncomeAanalytics = (props) => {
@@ -20,7 +21,6 @@ const IncomeAanalytics = (props) => {
     const [weeklyMonth, setWeeklyMonth] = useState(this_month);
 
     const [monthlyData, setMonthlyData] = useState([]);
-    const [monthlyYear, setMonthlyYear] = useState(this_year);
 
     const [loading, setLoading] = useState(false);
     const auth = props.auth;
@@ -57,9 +57,11 @@ const IncomeAanalytics = (props) => {
     }
 
     useEffect(() => {
-        getDailyAnalyticsData(this_year, this_month);
-        getWeeklyAnalyticsData(this_year, this_month);
-        getMonthlyAnalyticsData(this_year);
+        if (auth.isPremium()) {
+            getDailyAnalyticsData(this_year, this_month);
+            getWeeklyAnalyticsData(this_year, this_month);
+            getMonthlyAnalyticsData(this_year);
+        }
     }, []);
 
     const dailyChartData = {
@@ -127,6 +129,11 @@ const IncomeAanalytics = (props) => {
     }
 
     const getDailyAnalyticsData = (year, month) => {
+        if (auth.isFreemium()) {
+            toast.warn('Only premium members can see graph.')
+            return;
+        }
+
         setLoading(true);
         try {
             myAPI.getIncomeDailyAnalyticsData(auth.getToken(), year, month).then(response => {
@@ -150,6 +157,11 @@ const IncomeAanalytics = (props) => {
     };
 
     const getWeeklyAnalyticsData = (year, month) => {
+        if (auth.isFreemium()) {
+            toast.warn('Only premium members can see graph.')
+            return;
+        }
+
         setLoading(true);
         try {
             myAPI.getIncomeWeeklyAnalyticsData(auth.getToken(), year, month).then(response => {
@@ -173,6 +185,12 @@ const IncomeAanalytics = (props) => {
     };
 
     const getMonthlyAnalyticsData = (year) => {
+
+        if (auth.isFreemium()) {
+            toast.warn('Only premium members can see graph.')
+            return;
+        }
+
         setLoading(true);
         try {
             myAPI.getIncomeMonthlyAnalyticsData(auth.getToken(), year).then(response => {
@@ -198,6 +216,20 @@ const IncomeAanalytics = (props) => {
     return (
         <Fragment>
             <Breadcrumb title="Income Analytics" parent="Analytics" />
+            {loading &&
+            <div id="myOverlay" className="overlay">
+                <div className="overlay-content">
+                    <div className="loader-box" style={{display: "block"}}>
+                        <div className="loader">
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-sm-12">
@@ -231,7 +263,10 @@ const IncomeAanalytics = (props) => {
                                     </select>
                                 </div>
                             </div>
-                            <div className="card-body charts-box">
+                            { auth.isFreemium() &&
+                            <UnlockButton title="unlock graph"/>
+                            }
+                            <div className={`card-body  charts-box ${props.auth.isFreemium() ? `freemium_status` : `` }` }>
                                 <div className="flot-chart-container">
                                     <div className="flot-chart-placeholder" id="graph_daily">
                                         <Line data={dailyChartData} options={chartOptions} />
@@ -274,7 +309,10 @@ const IncomeAanalytics = (props) => {
                                     </select>
                                 </div>
                             </div>
-                            <div className="card-body charts-box">
+                            { auth.isFreemium() &&
+                            <UnlockButton title="unlock graph"/>
+                            }
+                            <div className={`card-body  charts-box ${props.auth.isFreemium() ? `freemium_status` : `` }` }>
                                 <div className="flot-chart-container">
                                     <div className="flot-chart-placeholder" id="graph_weekly">
                                         <Line data={weeklyChartData} options={chartOptions} />
@@ -292,7 +330,7 @@ const IncomeAanalytics = (props) => {
                                 <h5 className="float-left">Income per monthly</h5>
 
                                 <div className="float-right m-r-10">
-                                    <select className="form-control " placeholder={`Year`} defaultValue={this_year} onChange={e => { setMonthlyYear(e.target.value); getMonthlyAnalyticsData(e.target.value)} }>
+                                    <select className="form-control " placeholder={`Year`} defaultValue={this_year} onChange={e => { getMonthlyAnalyticsData(e.target.value)} }>
                                         {
                                             year_array.map((year) => {
                                                 return <option key={`weekly_${year}`} >{year}</option>
@@ -301,7 +339,10 @@ const IncomeAanalytics = (props) => {
                                     </select>
                                 </div>
                             </div>
-                            <div className="card-body charts-box">
+                            { auth.isFreemium() &&
+                            <UnlockButton title="unlock graph"/>
+                            }
+                            <div className={`card-body  charts-box ${props.auth.isFreemium() ? `freemium_status` : `` }` }>
                                 <div className="flot-chart-container">
                                     <div className="flot-chart-placeholder" id="graph_weekly">
                                         <Line data={monthlyChartData} options={chartOptions} />

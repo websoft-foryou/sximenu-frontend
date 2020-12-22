@@ -19,7 +19,6 @@ import IncomeAanalytics from "./components/analytics/income_analytics";
 import Pricing from "./components/other/pricing";
 import EmailSetting from "./components/setting/email_setting";
 import PasswordSetting from "./components/setting/password_setting";
-import PaymentSetting from "./components/setting/payment_setting";
 import AuthService from "./auth/auth_service";
 
 import './index.scss';
@@ -77,7 +76,7 @@ const Admin = () => {
 
                             {!isAdmin() ?
                                 <>
-                                    <PrivateRoute path="/admin/dashboard" component={UserDashboard}/>
+                                    <PrivateRoute path="/admin/dashboard" component={() => <UserDashboard auth={Auth} />}/>
                                     <PrivateRoute path="/admin/category" component={() => <Category auth={Auth} />} />
                                     <PrivateRoute path="/admin/product" component={() => <Product auth={Auth} />} />
                                     <PrivateRoute path="/admin/restuarant" component={() => <Restaurant auth={Auth} />} />
@@ -86,10 +85,9 @@ const Admin = () => {
                                     <PrivateRoute path="/admin/user_analytics" component={() => <UserAnalytics auth={Auth} />}/>
                                     <PrivateRoute path="/admin/income_analytics" component={() => <IncomeAanalytics auth={Auth} />}/>
 
-                                    <PrivateRoute path="/admin/membership" component={Pricing}/>
-                                    <PrivateRoute path="/admin/email_setting" component={EmailSetting}/>
-                                    <PrivateRoute path="/admin/password_setting" component={PasswordSetting}/>
-                                    <PrivateRoute path="/admin/payment_setting" component={PaymentSetting}/>
+                                    <PrivateRoute path="/admin/membership" component={() => <Pricing auth={Auth} />}/>
+                                    <PrivateRoute path="/admin/email_setting" component={() => <EmailSetting auth={Auth} />}/>
+                                    <PrivateRoute path="/admin/password_setting" component={() => <PasswordSetting auth={Auth} />}/>
                                 </>
                                 :
                                 <PrivateRoute path="/admin/dashboard" component={UserDashboard}/>

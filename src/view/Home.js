@@ -56,7 +56,7 @@ const Home = (props) => {
   useEffect(() => {
     getLocation();
     // props.fetchRestaurant();
-  });
+  },[]);
 
   const filterRestaurant = async inputValue => {
     return props.restaurantData.restaurants.filter(i =>

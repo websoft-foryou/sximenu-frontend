@@ -10,6 +10,7 @@ import Loader from './common/loader';
 
 
 const AppLayout = ({children}) => {
+
     return (
         <div>
             <Loader />

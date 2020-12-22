@@ -44,7 +44,7 @@ function GoogleMaps(props) {
       googleMap.current = createGoogleMap();
       marker.current = createMarker()
     })
-  });
+  },[]);
 
   return (
     <div

@@ -1,5 +1,6 @@
 import axios from 'axios';
 const BASE_API_URL = 'http://dev.sixmenu/api';
+//const BASE_API_URL = 'http://atarit.com/api';
 
 export default {
 
@@ -24,10 +25,14 @@ export default {
         axios.put(`${BASE_API_URL}/users/${id}`, user),
     deleteUser: (id) =>
         axios.delete(`${BASE_API_URL}/users/${id}`),
-    verifyEmail: (token) =>
-        axios.post(`${BASE_API_URL}/verify_email`, token),
+    verifyEmail: (email_data) =>
+        axios.post(`${BASE_API_URL}/verify_email`, email_data),
     loginUser: (user) =>
         axios.post(`${BASE_API_URL}/login_user`, user),
+    completeSignupPaypalPayment:(payment_data, payment_token, auth_token) =>
+        axios.post(`${BASE_API_URL}/complete_signup_payment`, payment_data, {
+            headers: { 'X-CSRF-TOKEN': payment_token }
+        }),
 
 
     // category management
@@ -108,6 +113,44 @@ export default {
         }),
     getIncomeMonthlyAnalyticsData:(token, year) =>
         axios.get(`${BASE_API_URL}/get_income_monthly_analytics_data/${year}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+
+    // Setting
+    updateEmail:(email, token) =>
+        axios.put(`${BASE_API_URL}/update_email`, email, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+    updatePassword:(password_info, token) =>
+        axios.put(`${BASE_API_URL}/update_password`, password_info, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+
+    // Pricing
+    getMembership:(token) =>
+        axios.get(`${BASE_API_URL}/get_membership`, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+    handlePaypalPayment:(payment_data, token) =>
+        axios.post(`${BASE_API_URL}/charge_paypal`, payment_data, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+    completePaypalPayment:(payment_data, payment_token, auth_token) =>
+        axios.post(`${BASE_API_URL}/complete_payment`, payment_data, {
+            headers: { Authorization: `Bearer ${auth_token}`, 'X-CSRF-TOKEN': payment_token }
+        }),
+    handleCardPayment:(payment_data, token) =>
+        axios.post(`${BASE_API_URL}/charge_card`, payment_data, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+    handleDowngrade:(token) =>
+        axios.get(`${BASE_API_URL}/downgrade_freemium`,  {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
+
+    // Dashboard
+    getRecentData:(token) =>
+        axios.get(`${BASE_API_URL}/get_recent_data`, {
             headers: { Authorization: `Bearer ${token}` }
         }),
 }

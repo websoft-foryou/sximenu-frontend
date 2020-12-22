@@ -85,10 +85,10 @@ class TimePickerFour extends React.Component {
     }
 
     render() {
-        const { hour, minute, } = this.state;
         const {isDisabled, timeValue} = this.props;
-        var time = hour && minute ? `${hour}:${minute}` : null;
-        if (isDisabled) time = '--:--';
+        //const { hour, minute, } = this.state;
+        // var time = hour && minute ? `${hour}:${minute}` : null;
+        // if (isDisabled) time = '--:--';
 
         return (
             // <div className="time_picker_wrapper">

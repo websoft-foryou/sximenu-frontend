@@ -6,12 +6,14 @@ import headerBackground from "../assets/img/page-header-bg.jpg";
 import logoImage from "../assets/img/logo.svg";
 import myAPI from "../Api";
 
-const EmailVerification = () => {
+const EmailVerification = (props) => {
     const [verifyResult, setVerifyResult] = useState('');
     const { token } = useParams();
     const getVerifyResult = () => {
+
         myAPI.verifyEmail({
-            token : token
+            token : token,
+            verify_type: props.verifyType
         }).then(response => {
             if (response.data.success)
                 setVerifyResult(response.data.result);
@@ -22,7 +24,7 @@ const EmailVerification = () => {
 
     useEffect(() => {
         getVerifyResult();
-    }, []);
+    },[]);
 
     const renderVerifyResult = () => {
         return verifyResult;

@@ -13,6 +13,7 @@ import ImageUploader from "react-images-upload";
 import mastercard from "../assets/img/mastercard.svg";
 import visa from "../assets/img/visa.svg";
 import PayPal from "../assets/img/PayPal.svg";
+import {ToastContainer, toast} from "react-toastify";
 import {FiArrowLeft} from "react-icons/fi";
 
 import { Alert } from 'reactstrap';
@@ -20,59 +21,34 @@ import myAPI from "../Api";
 
 import '../admin/assets/css/mystyle.css';
 
+
 class SignUp extends Component {
   constructor(props) {
     super(props);
     this.handleChangeLocation = this.handleChangeLocation.bind(this);
     this.handleImageUpload = this.handleImageUpload.bind(this);
 
+    this.this_year = new Date().getFullYear();
+    this.this_month = new Date().getMonth() + 1;
+    this.countryList = [ { name: 'ISRAEL', code: 'IL'}, { name: 'RUSSIA', code: 'RU'}, {name: 'ALBANIA', code: 'AL'}];
+    this.amount = 69.00;
+    this.year_array = [];
+    for (let i = this.this_year; i < this.this_year + 10; i ++) {
+      this.year_array.push(i);
+    }
 
+    console.log(this.props.success);
+    if (this.props.success === "true") {
+      toast.info('We sent a verification email to your account. Please check your email inbox.', {autoClose: 5000});
+    }
     this.state = {
-      basicPlan: [
-        {
-          isActive: true,
-          text: 'Lorem ipsum dolor sit.'
-        }, {
-          isActive: true,
-          text: 'Lorem ipsum dolor sit.'
-        }, {
-          isActive: false,
-          text: 'Lorem ipsum dolor sit.'
-        }, {
-          isActive: false,
-          text: 'Lorem ipsum dolor sit.'
-        }
-      ],
-      premiumPlan: [
-        {
-          isActive: true,
-          text: 'Lorem ipsum dolor sit.'
-        }, {
-          isActive: true,
-          text: 'Lorem ipsum dolor sit.'
-        }, {
-          isActive: true,
-          text: 'Lorem ipsum dolor sit.'
-        }, {
-          isActive: false,
-          text: 'Lorem ipsum dolor sit.'
-        }
-      ],
-      diamondPlan: [
-        {
-          isActive: true,
-          text: 'Lorem ipsum dolor sit.'
-        }, {
-          isActive: true,
-          text: 'Lorem ipsum dolor sit.'
-        }, {
-          isActive: true,
-          text: 'Lorem ipsum dolor sit.'
-        }, {
-          isActive: true,
-          text: 'Lorem ipsum dolor sit.'
-        }
-      ],
+      basicPlan: [ { isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: false, text: 'Lorem ipsum dolor sit.'},
+        {isActive: false, text: 'Lorem ipsum dolor sit.'} ],
+      premiumPlan: [{ isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: true, text: 'Lorem ipsum dolor sit.'},
+        {isActive: false, text: 'Lorem ipsum dolor sit.'} ],
+      diamondPlan: [{ isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: true, text: 'Lorem ipsum dolor sit.'},
+        {isActive: true, text: 'Lorem ipsum dolor sit.'} ],
+
       planValue: null,
       isPlanSelected: false,
       isPaymentMethodPayPal: false,
@@ -85,9 +61,9 @@ class SignUp extends Component {
       addressEn: '',
       addressHb: '',
       location: {
-        position: '',
-        latitude: '',
-        longitude: ''
+        position: 'Soroka Sorting / Wingate, Be\'er Sheva, Israel',
+        latitude: 31.255693,
+        longitude: 34.79998
       },
       email: '',
       phone_number: '',
@@ -96,6 +72,15 @@ class SignUp extends Component {
       signup_error: '',
       signup_ok: false,
       restaurant_images: [],
+      holderName: '',
+      cardNumber: '',
+      expireYear: this.this_year,
+      expireMonth: this.this_month,
+      cvcNumber: '',
+      billingCountry: this.countryList[0]['code'],
+      billingAddress: '',
+      billingCity: '',
+      billingPostCode: ''
     }
 
   }
@@ -128,29 +113,66 @@ class SignUp extends Component {
 
   onSignUp = async () => {
     this.setState({ loading: true});
+    let send_data = {
+      restaurant_name_en: this.state.nameEn,
+      restaurant_name_hb: this.state.nameHb,
+      restaurant_description_en: this.state.descriptionEn,
+      restaurant_description_hb: this.state.descriptionHb,
+      restaurant_address_en: this.state.addressEn,
+      restaurant_address_hb: this.state.addressHb,
+      restaurant_position: this.state.location.position,
+      restaurant_latitude: this.state.location.latitude,
+      restaurant_longitude: this.state.location.longitude,
+      restaurant_images: this.state.restaurant_images,
+      email: this.state.email,
+      phone_number: this.state.phone_number,
+      password: this.state.password,
+    };
     try {
-      await myAPI.addUser({
-        restaurant_name_en: this.state.nameEn,
-        restaurant_name_hb: this.state.nameHb,
-        restaurant_description_en: this.state.descriptionEn,
-        restaurant_description_hb: this.state.descriptionHb,
-        restaurant_address_en: this.state.addressEn,
-        restaurant_address_hb: this.state.addressHb,
-        restaurant_position: this.state.location.position,
-        restaurant_latitude: this.state.location.latitude,
-        restaurant_longitude: this.state.location.longitude,
-        restaurant_images: this.state.restaurant_images,
-        email: this.state.email,
-        phone_number: this.state.phone_number,
-        password: this.state.password
-      }).then(response => {
+      if (this.state.planValue > 0) {
+        send_data.membership = '1';
+        send_data.amount = this.amount;
 
-        if (response.data.success === false)
-          this.setState({ signup_error: response.data.result });
-        else
-          this.setState({signup_ok: true});
-        //history.push('/');
-      });
+        if (this.state.isPaymentMethodPayPal) {
+          send_data.payment_method = 'paypal';
+          await myAPI.addUser(send_data).then(response => {
+            if (response.data.success === false)
+              this.setState({ signup_error: response.data.result });
+            else {
+              sessionStorage.setItem('user_id', response.data.result.user_id);
+              window.location.href = response.data.result.redirect_url;
+            }
+          });
+        }
+        else {
+          send_data.payment_method = 'card';
+          send_data.holder_name = this.state.holderName;
+          send_data.card_number = this.state.cardNumber;
+          send_data.expire_year = this.state.expireYear;
+          send_data.expire_month = this.state.expireMonth;
+          send_data.cvc_number = this.state.cvcNumber;
+          send_data.billing_country = this.state.billingCountry;
+          send_data.billing_address = this.state.billingAddress;
+          send_data.billing_city = this.state.billingCity;
+          send_data.billing_post_code = this.state.billingPostCode;
+          await myAPI.addUser(send_data).then(response => {
+            if (response.data.success === false)
+              this.setState({ signup_error: response.data.result });
+            else
+              this.setState({signup_ok: true});
+          });
+        }
+      }
+      else {
+        send_data.membership = '0';
+        await myAPI.addUser(send_data).then(response => {
+          if (response.data.success === false)
+            this.setState({ signup_error: response.data.result });
+          else
+            this.setState({signup_ok: true});
+        });
+      }
+
 
     } catch(err) {
       alert(err.message);
@@ -303,7 +325,7 @@ class SignUp extends Component {
                       <div className="form-group">
                         <label htmlFor="restaurantNameEnglish" className="sr-only">Restaurant Name in English</label>
                         <input type="text" id="restaurantNameEnglish" className="form-control"
-                               placeholder="Restaurant Name in English" value={this.state.nameEn} onChange={e => this.setState({nameEn: e.target.value})} />
+                               placeholder="Restaurant Name in English" value={this.state.nameEn} onChange={e => this.setState({nameEn: e.target.value})} required />
                       </div>
                     </Col>
                     <Col md="6">
@@ -345,7 +367,7 @@ class SignUp extends Component {
                   </Row>
 
                   <div className="form-group">
-                    <GoogleMaps onChangeLocation={ this.handleChangeLocation }/>
+                    <GoogleMaps locationValue={this.state.location}  onChangeLocation={ this.handleChangeLocation }/>
                   </div>
 
                   <div className="form-group">
@@ -385,10 +407,7 @@ class SignUp extends Component {
 
                     <div className="payment-types">
                       <label htmlFor="paymentStripe" className="payment-type">
-                        <input type="radio" name="paymentType"
-                               defaultChecked
-                               onChange={() => this.handleChangePaymentMethod('stripe')}
-                               id="paymentStripe"/>
+                        <input type="radio" name="paymentType" defaultChecked onChange={() => this.handleChangePaymentMethod('stripe')} id="paymentStripe"/>
                         <span className="payment-type-text">
                           <span>
                             <img src={mastercard} alt="Mastercard"/>
@@ -398,13 +417,9 @@ class SignUp extends Component {
                       </label>
 
                       <label htmlFor="paymentPayment" className="payment-type">
-                        <input type="radio" name="paymentType"
-                               onChange={() => this.handleChangePaymentMethod('PayPal')}
-                               id="paymentPayment"/>
+                        <input type="radio" name="paymentType" onChange={() => this.handleChangePaymentMethod('PayPal')} id="paymentPayment"/>
                         <span className="payment-type-text">
-                          <span>
-                            <img src={PayPal} alt="PayPal"/>
-                          </span>
+                          <span><img src={PayPal} alt="PayPal"/></span>
                         </span>
                       </label>
                     </div>
@@ -415,15 +430,14 @@ class SignUp extends Component {
                         <Col md="6">
                           <div className="form-group">
                             <label htmlFor="cardholderName" className="sr-only">Cardholder Name</label>
-                            <input type="text" id="cardholderName"
-                                   className="form-control" placeholder="Cardholder Name"/>
+                            <input type="text" id="cardholderName" className="form-control" placeholder="Cardholder Name" value={this.state.holderName} onChange={e => this.setState({holderName: e.target.value})} />
                           </div>
                         </Col>
 
                         <Col md="6">
                           <div className="form-group">
                             <label htmlFor="cardNumber" className="sr-only">Card Number</label>
-                            <input type="text" id="cardNumber" className="form-control" placeholder="Card Number"/>
+                            <input type="number" id="cardNumber" className="form-control" placeholder="Card Number" value={this.state.cardNumber} onChange={e => this.setState( {cardNumber: e.target.value })}/>
                           </div>
                         </Col>
                       </Row>
@@ -432,20 +446,20 @@ class SignUp extends Component {
                         <Col md="4">
                           <div className="form-group">
                             <label htmlFor="expireMonth" className="sr-only">Expire Month</label>
-                            <select name="expire_Month" id="expireMonth" className="form-control">
+                            <select name="expire_Month" id="expireMonth" className="form-control" defaultValue={this.this_month} onChange={e => this.setState({expireMonth: e.target.value} )}>
                               <option value="">--Expire Month--</option>
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
-                              <option value="6">6</option>
-                              <option value="7">7</option>
-                              <option value="8">8</option>
-                              <option value="9">9</option>
-                              <option value="10">10</option>
-                              <option value="11">11</option>
-                              <option value="12">12</option>
+                              <option value="01">Jan</option>
+                              <option value="02">Feb</option>
+                              <option value="03">Mar</option>
+                              <option value="04">Apr</option>
+                              <option value="05">May</option>
+                              <option value="06">Jun</option>
+                              <option value="07">July</option>
+                              <option value="08">Aug</option>
+                              <option value="09">Sep</option>
+                              <option value="10">Oct</option>
+                              <option value="11">Nov</option>
+                              <option value="12">Dec</option>
                             </select>
                           </div>
                         </Col>
@@ -453,28 +467,48 @@ class SignUp extends Component {
                         <Col md="4">
                           <div className="form-group">
                             <label htmlFor="expireYear" className="sr-only">Expire Year</label>
-                            <select name="expire_year" id="expireYear" className="form-control">
+                            <select name="expire_year" id="expireYear" className="form-control" defaultValue={this.this_year} onChange={e => this.setState({expireYear: e.target.value})}>
                               <option value="">--Expire Year--</option>
-                              <option value="2020">2020</option>
-                              <option value="2021">2021</option>
-                              <option value="2022">2022</option>
-                              <option value="2023">2023</option>
-                              <option value="2024">2024</option>
-                              <option value="2025">2025</option>
-                              <option value="2026">2026</option>
-                              <option value="2027">2027</option>
-                              <option value="2028">2028</option>
-                              <option value="2029">2029</option>
-                              <option value="2030">2030</option>
+                              {
+                                this.year_array.map((year) => {
+                                  return <option value={year} key={`expire_${year}`}>{year}</option>
+                                })
+                              }
                             </select>
                           </div>
                         </Col>
 
                         <Col md="4">
                           <div className="form-group">
-                            <label htmlFor="cvcNumber" className="sr-only">CVC Number</label>
-                            <input type="number" minLength={3} maxLength={3} id="cvcNumber" className="form-control"
-                                   placeholder="CVC Number"/>
+                            <input type="number" minLength={3} maxLength={3} id="cvcNumber" className="form-control" placeholder="CVC Number" value={this.state.cvcNumber} onChange={e => this.setState({cvcNumber: e.target.value})}/>
+                          </div>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col md="3">
+                          <div className="form-group">
+                            <select className="form-control " placeholder={`Country`} defaultValue={this.countryList[0]['code']} onChange={e => this.setState({ billingCountry: e.target.value})}>
+                              {
+                                this.countryList.map((country) => {
+                                  return <option value={country['code']} key={`country_${country['code']}`}>{country['name']}</option>
+                                })
+                              }
+                            </select>
+                          </div>
+                        </Col>
+                        <Col md="3">
+                          <div className="form-group">
+                            <input className="form-control" placeholder="Address" type="text" required value={this.state.billingAddress} onChange={e => this.setState({ billingAddress: e.target.value})} />
+                          </div>
+                        </Col>
+                        <Col md="3">
+                          <div className="form-group">
+                            <input className="form-control" placeholder="City" type="text" required value={this.state.billingCity} onChange={e => this.setState( {billingCity: e.target.value} )} />
+                          </div>
+                        </Col>
+                        <Col md="3">
+                          <div className="form-group">
+                            <input className="form-control" placeholder="Post Code" type="number" required value={this.state.billingPostCode} onChange={e => this.setState({ billingPostCode: e.target.value})} />
                           </div>
                         </Col>
                       </Row>
@@ -505,6 +539,7 @@ class SignUp extends Component {
         <div className="text-center pb-3">
           &copy; 2020 <Link to="/">Sixmenu</Link>. All right reserved.
         </div>
+        <ToastContainer />
       </div>
     );
   }

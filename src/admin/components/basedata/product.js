@@ -296,7 +296,7 @@ class Product extends Component {
                                 <div className="card-header">
                                     <h5 className="float-left">Product</h5>
                                     <div className="float-right">
-                                        <button type="button" className="btn btn-success" onClick={() => this.addProductModal()}>New Product</button>
+                                        <button type="button" className="btn btn-default" onClick={() => this.addProductModal()}>New Product</button>
                                     </div>
                                 </div>
                                 <div className="card-body datatable-react">

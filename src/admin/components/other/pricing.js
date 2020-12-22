@@ -1,11 +1,173 @@
-import React, { Fragment } from 'react';
+import React, {useState, Fragment, useEffect} from 'react';
 import Breadcrumb from '../common/breadcrumb';
-import { Alert } from 'reactstrap';
+import {toast} from "react-toastify";
+import PricingTable from "../../../component/PricingTable";
 
-const Pricing = () => {
+import myAPI from "../../../Api";
+import '../../assets/css/mystyle.css';
+import MasterIcon from "../../../assets/img/mastercard.svg";
+import VisaIcon from "../../../assets/img/visa.svg";
+import PayPalIcon from "../../../assets/img/PayPal.svg";
+import Bootbox from "bootbox-react";
+
+const Pricing = (props) => {
+
+    const freemiumPlan = [ { isActive: true, text: 'Lorem ipsum dolor sit.'},
+            { isActive: true, text: 'Lorem ipsum dolor sit.'},
+            { isActive: false, text: 'Lorem ipsum dolor sit.' },
+            { isActive: false, text: 'Lorem ipsum dolor sit.' } ];
+    const premiumPlan = [ { isActive: true, text: 'Lorem ipsum dolor sit.'},
+        { isActive: true, text: 'Lorem ipsum dolor sit.'},
+        { isActive: true, text: 'Lorem ipsum dolor sit.' },
+        { isActive: true, text: 'Lorem ipsum dolor sit.' } ];
+
+
+
+    const [planValue, setPlanValue] = useState('');
+    const [isFreemium, setIsFreemium] = useState(true);
+    const [isPremium, setIsPremium] = useState(false);
+    const [visaType, setVisaType] = useState(true);
+    const [loading, setLoading] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    const amount = 69.00;
+    const this_year = new Date().getFullYear();
+    const this_month = new Date().getMonth() + 1;
+    const countryList = [ { name: 'ISRAEL', code: 'IL'}, { name: 'RUSSIA', code: 'RU'}, {name: 'ALBANIA', code: 'AL'}] // https://developer.paypal.com/docs/api/reference/country-codes/
+
+    const [expireYear, setExpireYear] = useState(this_year);
+    const [expireMonth, setExpireMonth] = useState(this_month);
+    const [billingCountry, setBillingCountry] = useState(countryList[0]['code']);
+    const [holderName, setHolderName] = useState('');
+    const [cardNumber, setCardNumber] = useState('');
+    const [cvcNumber, setCvcNumber] = useState('');
+    const [address, setAddress] = useState('');
+    const [city, setCity] = useState('');
+    const [postCode, setPostCode] = useState('');
+
+    const auth = props.auth;
+
+    let year_array = [];
+    for (let i = this_year; i < this_year + 10; i ++) {
+        year_array.push(i);
+    }
+
+    useEffect(() => {
+        getMembership();
+    },[]);
+
+    const getMembership = () => {
+        setLoading(true);
+
+        try {
+            myAPI.getMembership(auth.getToken()).then(response => {
+                if (response.data.success) {
+                    if (response.data.result === 'freemium') {
+                        setIsFreemium(true);
+                        setIsPremium(false);
+                    }
+                    else {
+                        setIsFreemium(false);
+                        setIsPremium(true);
+                    }
+                }
+                else
+                    toast.error(response.data.result);
+            });
+
+        } catch(e) {
+            toast.error(e.message);
+        } finally {
+            setLoading(false);
+
+        }
+    };
+
+    const handleSelectPlan = value => {
+        setPlanValue(value);
+        if (value === 0) {
+            setShowConfirm(true);
+        }
+    };
+
+    const downgradeFreemium = async() => {
+        await myAPI.handleDowngrade(auth.getToken()).then(response => {
+            setShowConfirm(false);
+            if (response.data.success) {
+                setIsPremium(false);
+                setIsFreemium(true);
+                getMembership();
+            }
+            else
+                toast.error(response.data.result);
+        });
+    };
+    
+    const upgradePremium = async() => {
+        setLoading(true);
+        try {
+            if (visaType) {
+                // Card
+                await myAPI.handleCardPayment({
+                    amount: amount,
+                    holer_name: holderName,
+                    card_number: cardNumber,
+                    cvc_number: cvcNumber,
+                    expire_year: expireYear,
+                    expire_month: expireMonth,
+                    billing_country: billingCountry,
+                    address: address,
+                    city: city,
+                    post_code: postCode,
+
+                }, auth.getToken()).then(response => {
+                    if (response.data.success) {
+                        setIsPremium(true);
+                        setIsFreemium(false);
+                        getMembership();
+                    }
+                    else
+                        toast.error(response.data.result);
+                });
+            }
+            else {
+                // Paypal
+                await myAPI.handlePaypalPayment({
+                    amount: amount
+                }, auth.getToken()).then(response => {
+                    if (response.data.success) {
+                        window.location.href = response.data.result;
+                    }
+                    else
+                        toast.error(response.data.result);
+                });
+            }
+
+
+        } catch(e) {
+            toast.error(e.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <Fragment>
             <Breadcrumb title="" parent="Membership" />
+            {loading &&
+            <div id="myOverlay" className="overlay">
+                <div className="overlay-content">
+                    <div className="loader-box" style={{display: "block"}}>
+                        <div className="loader">
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                            <div className="line bg-warning"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            }
             <div className="container-fluid">
                 <div className="row">
 
@@ -15,68 +177,162 @@ const Pricing = () => {
                                 <h5>Membership</h5>
                             </div>
                             <div className="card-body pricing-card-design-3">
-                                <div className="row pricing-content-ribbons justify-content-center">
-                                    <div className="col-12 col-lg-4">
-                                        <div className="pricing-block card text-center">
-                                            <svg x="0" y="0" viewBox="0 0 360 220">
-                                                <g>
-                                                    <path d="M0.732,193.75c0,0,29.706,28.572,43.736-4.512c12.976-30.599,37.005-27.589,44.983-7.061                                          c8.09,20.815,22.83,41.034,48.324,27.781c21.875-11.372,46.499,4.066,49.155,5.591c6.242,3.586,28.729,7.626,38.246-14.243                                          s27.202-37.185,46.917-8.488c19.715,28.693,38.687,13.116,46.502,4.832c7.817-8.282,27.386-15.906,41.405,6.294V0H0.48                                          L0.732,193.75z"></path>
-                                                </g>
-                                                <text transform="matrix(1 0 0 1 100.7256 116.2686)" fill="#fff" fontSize="78.4489">$0</text>
-                                                <text transform="matrix(1 0 0 1 200.9629 115.5303)" fill="#fff" fontSize="15.4128">/Month</text>
-                                            </svg>
-                                            <div className="pricing-inner">
-                                                <h3 className="font-primary">Freemium</h3>
-                                                <ul className="pricing-inner">
-                                                    <li><h6><b>Limit access</b> in Dashboard</h6></li>
-                                                    <li><h6><b>Limit control</b> in Category Management</h6></li>
-                                                    <li><h6><b>Limit control</b> in Product Management</h6></li>
-                                                    <li><h6><b>Full access</b> in Restaurant Information</h6></li>
-                                                    <li><h6><b>No access</b> in User History</h6></li>
-                                                    <li><h6><b>No access</b> in User Analytics</h6></li>
-                                                    <li><h6><b>No access</b> in Income Analytics</h6></li>
-                                                    <li><h6><b>Full access</b> in Membership</h6></li>
-                                                </ul>
-                                                <Alert color="warning" className="dark">
-                                                    You are Freemium now.
-                                                </Alert>
-                                                {/*<button className="btn btn-success" type="button">Subscribe</button>*/}
+                                <div className="row pricing-content-ribbons ">
+                                    <div className="col-6 col-lg-3">
+                                        <PricingTable
+                                            plan="Freemium"
+                                            price={0}
+                                            planPeriod="Month"
+                                            handleSelectPlan={handleSelectPlan}
+                                            isFeatured={false}
+                                            isPurchased={isFreemium}
+                                            featureList={freemiumPlan} />
+                                    </div>
+                                    <div className="col-6 col-lg-3">
+                                        <PricingTable
+                                            plan="Premium"
+                                            price={amount}
+                                            planPeriod="Month"
+                                            handleSelectPlan={handleSelectPlan}
+                                            isFeatured={true}
+                                            isPurchased={isPremium}
+                                            featureList={premiumPlan}/>
+                                    </div>
+                                    {(planValue > 0 && isFreemium) &&
+                                    <div className="col-12 col-lg-6">
+                                        <div className="form-row">
+                                            <div className="col-12 col-lg-6">
+                                                <div className="form-group">
+                                                    <span className={`payment_type visa ${visaType ? 'selected' : ''}`} onClick={() => setVisaType(true)}>
+                                                        <img src={MasterIcon} alt="Mastercard"/>
+                                                        <img src={VisaIcon} alt="Visa"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div className="col-12 col-lg-6">
+                                                <div className="form-group">
+                                                    <span className={`payment_type paypal ${visaType ? '' : 'selected'}`} onClick={() => setVisaType(false)}>
+                                                        <img src={PayPalIcon} alt="Paypal"/>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="col-12 col-lg-4">
-                                        <div className="pricing-block card text-center">
-                                            <div className="ribbon ribbon-clip-right ribbon-right ribbon-danger">Popular</div>
-                                            <svg x="0" y="0" viewBox="0 0 360 220">
-                                                <g>
-                                                    <path d="M0.732,193.75c0,0,29.706,28.572,43.736-4.512c12.976-30.599,37.005-27.589,44.983-7.061                                          c8.09,20.815,22.83,41.034,48.324,27.781c21.875-11.372,46.499,4.066,49.155,5.591c6.242,3.586,28.729,7.626,38.246-14.243                                          s27.202-37.185,46.917-8.488c19.715,28.693,38.687,13.116,46.502,4.832c7.817-8.282,27.386-15.906,41.405,6.294V0H0.48                                          L0.732,193.75z"></path>
-                                                </g>
-                                                <text transform="matrix(1 0 0 1 69.7256 116.2686)" fill="#fff" fontSize="78.4489">$99</text>
-                                                <text transform="matrix(0.9566 0 0 1 197.3096 83.9121)" fill="#fff" fontSize="29.0829">.99</text>
-                                                <text transform="matrix(1 0 0 1 233.9629 115.5303)" fill="#fff" fontSize="15.4128">/Month</text>
-                                            </svg>
-                                            <div className="pricing-inner">
-                                                <h3 className="font-primary">Premium</h3>
-                                                <ul className="pricing-inner">
-                                                    <li><h6><b>Full access</b> in Dashboard</h6></li>
-                                                    <li><h6><b>Full control</b> in Category Management</h6></li>
-                                                    <li><h6><b>Full control</b> in Product Management</h6></li>
-                                                    <li><h6><b>Full access</b> in Restaurant Information</h6></li>
-                                                    <li><h6><b>Full access</b> in User History</h6></li>
-                                                    <li><h6><b>Full access</b> in User Analytics</h6></li>
-                                                    <li><h6><b>Full access</b> in Income Analytics</h6></li>
-                                                    <li><h6><b>Full access</b> in Membership</h6></li>
-                                                </ul>
-                                                <button className="btn btn-success" type="button"> UPGRADE </button>
+                                        {visaType &&
+                                        <>
+                                            <div className="form-row">
+                                                <div className="col-12 col-lg-6">
+                                                    <div className="form-group">
+                                                        <label className="col-form-label" htmlFor="holer_name">Holder Name: </label>
+                                                        <input className="form-control" type="text" required value={holderName} onChange={e =>setHolderName(e.target.value)} />
+                                                    </div>
+                                                </div>
+                                                <div className="col-12 col-lg-6">
+                                                    <div className="form-group">
+                                                        <label className="col-form-label" htmlFor="card_number">Card Number:</label>
+                                                        <input className="form-control" type="number" required value={cardNumber} onChange={e => setCardNumber(e.target.value)}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="form-row">
+                                                <div className="col-12 col-lg-4">
+                                                    <div className="form-group">
+                                                        <label className="col-form-label" htmlFor="expire_month">Expire Month: </label>
+                                                        <select className="form-control " placeholder={`Month`} defaultValue={this_month} onChange={e => setExpireMonth(e.target.value)}>
+                                                            <option value="01">Jan</option>
+                                                            <option value="02">Feb</option>
+                                                            <option value="03">Mar</option>
+                                                            <option value="04">Apr</option>
+                                                            <option value="05">May</option>
+                                                            <option value="06">Jun</option>
+                                                            <option value="07">July</option>
+                                                            <option value="08">Aug</option>
+                                                            <option value="09">Sep</option>
+                                                            <option value="10">Oct</option>
+                                                            <option value="11">Nov</option>
+                                                            <option value="12">Dec</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="col-12 col-lg-4">
+                                                    <div className="form-group">
+                                                        <label className="col-form-label" htmlFor="expire_year">Expire Year:</label>
+                                                        <select className="form-control " placeholder={`Year`} defaultValue={this_year} onChange={e => setExpireYear(e.target.value)}>
+                                                            {
+                                                                year_array.map((year) => {
+                                                                    return <option value={year} key={`expire_${year}`}>{year}</option>
+                                                                })
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="col-12 col-lg-4">
+                                                    <div className="form-group">
+                                                        <label className="col-form-label" htmlFor="cvc_number">CVC Number:</label>
+                                                        <input className="form-control" type="number" required value={cvcNumber} onChange={e => setCvcNumber(e.target.value)}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="form-row">
+                                                <div className="col-6 col-lg-3">
+                                                    <div className="form-group">
+                                                        <label className="col-form-label" htmlFor="coutnry">Country: </label>
+                                                        <select className="form-control " placeholder={`Country`} defaultValue={countryList[0]['code']} onChange={e => setBillingCountry(e.target.value)}>
+                                                            {
+                                                                countryList.map((country) => {
+                                                                    return <option value={country['code']} key={`country_${country['code']}`}>{country['name']}</option>
+                                                                })
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div className="col-6 col-lg-3">
+                                                    <div className="form-group">
+                                                        <label className="col-form-label" htmlFor="billing_address">Address:</label>
+                                                        <input className="form-control" type="text" required value={address} onChange={e => setAddress(e.target.value)} />
+                                                    </div>
+                                                </div>
+
+                                                <div className="col-6 col-lg-3">
+                                                    <div className="form-group">
+                                                        <label className="col-form-label" htmlFor="billing_city">City: </label>
+                                                        <input className="form-control" type="text" required value={city} onChange={e => setCity(e.target.value)} />
+                                                    </div>
+                                                </div>
+                                                <div className="col-6 col-lg-3">
+                                                    <div className="form-group">
+                                                        <label className="col-form-label" htmlFor="billing_postcode">Post Code:</label>
+                                                        <input className="form-control" type="number" required value={postCode} onChange={e => setPostCode(e.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </>
+                                        }
+
+                                        <div className="form-row">
+                                            <div className="col-12 m-t-20">
+                                                <button type="button" className="btn btn-success float-right" onClick={() => upgradePremium()}>Submit</button>
                                             </div>
                                         </div>
+
+
                                     </div>
+                                    }
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
+
+            <Bootbox show={showConfirm}
+                     type={"confirm"}
+                     message={"If you have freemium, your permission will be limited. Are you sure?"}
+                     onSuccess={() => downgradeFreemium() }
+                     onCancel={() => setShowConfirm(false)}
+            />
+
         </Fragment>
     );
 };

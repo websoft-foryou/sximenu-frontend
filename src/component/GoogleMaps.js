@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 
 // Variables
 const GOOGLE_MAP_API_KEY = 'AIzaSyDv76XGp9lWgIMBXk9_f4-nXDqVmq6DebM';
-const myLocation = { // CN Tower Landmark
-  lat: 31.0581922,
-  lng: 34.2722496
-};
+// const myLocation = { // CN Tower Landmark
+//   lat: 31.0581922,
+//   lng: 34.2722496
+// };
 // styles
 const mapStyles = {
   width: '100%',

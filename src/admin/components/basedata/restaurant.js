@@ -48,7 +48,7 @@ const Restaurant = (props) => {
 
     useEffect(() => {
         getRestaurantData();
-    }, []);
+    },[]);
 
     const handleCheckDay = (day, value) => {
         setOpenDay((prev) => ({
@@ -98,22 +98,22 @@ const Restaurant = (props) => {
                     let result = response.data.result;
 
                     setOpenDay({
-                        Mon: result.mon_from === '' ? false : true, Tue: result.tue_from === '' ? false : true,
-                        Wed: result.wed_from === '' ? false : true, Thu: result.thu_from === '' ? false : true,
-                        Fri: result.fri_from === '' ? false : true, Sat: result.sat_from === '' ? false : true,
-                        Sun: result.sun_from === '' ? false : true,
+                        Mon: result.mon_from === '' || result.mon_from === null ? false : true, Tue: result.tue_from === '' || result.tue_from === null ? false : true,
+                        Wed: result.wed_from === '' || result.wed_from === null ? false : true, Thu: result.thu_from === '' || result.thu_from === null ? false : true,
+                        Fri: result.fri_from === '' || result.wed_from === null ? false : true, Sat: result.sat_from === '' || result.sat_from === null ? false : true,
+                        Sun: result.sun_from === '' || result.wed_from === null ? false : true,
                     });
                     setOpenHourFrom({
-                        Mon: result.mon_from === '' ? '00:00' : result.mon_from, Tue: result.tue_from === '' ? '00:00' : result.tue_from,
-                        Wed: result.wed_from === '' ? '00:00' : result.wed_from, Thu: result.thu_from === '' ? '00:00' : result.thu_from,
-                        Fri: result.fri_from === '' ? '00:00' : result.fri_from, Sat: result.sat_from === '' ? '00:00' : result.sat_from,
-                        Sun: result.sun_from === '' ? '00:00' : result.sun_from,
+                        Mon: result.mon_from === ''  || result.mon_from === null ? '00:00' : result.mon_from, Tue: result.tue_from === '' || result.tue_from === null ? '00:00' : result.tue_from,
+                        Wed: result.wed_from === '' || result.wed_from === null ? '00:00' : result.wed_from, Thu: result.thu_from === '' || result.thu_from === null ? '00:00' : result.thu_from,
+                        Fri: result.fri_from === '' || result.fri_from === null ? '00:00' : result.fri_from, Sat: result.sat_from === '' || result.sat_from === null ? '00:00' : result.sat_from,
+                        Sun: result.sun_from === '' || result.sun_from === null ? '00:00' : result.sun_from,
                     });
                     setOpenHourTo({
-                        Mon: result.mon_to === '' ? '00:00' : result.mon_to, Tue: result.tue_to === '' ? '00:00' : result.tue_to,
-                        Wed: result.wed_to === '' ? '00:00' : result.wed_to, Thu: result.thu_to === '' ? '00:00' : result.thu_to,
-                        Fri: result.fri_to === '' ? '00:00' : result.fri_to, Sat: result.sat_to === '' ? '00:00' : result.sat_to,
-                        Sun: result.sun_to === '' ? '00:00' : result.sun_to,
+                        Mon: result.mon_to === '' || result.mon_to === null ? '00:00' : result.mon_to, Tue: result.tue_to === '' || result.tue_to === null ? '00:00' : result.tue_to,
+                        Wed: result.wed_to === '' || result.wed_to === null ? '00:00' : result.wed_to, Thu: result.thu_to === '' || result.thu_to === null ? '00:00' : result.thu_to,
+                        Fri: result.fri_to === '' || result.fri_to === null ? '00:00' : result.fri_to, Sat: result.sat_to === '' || result.sat_to === null ? '00:00' : result.sat_to,
+                        Sun: result.sun_to === '' || result.sun_to === null ? '00:00' : result.sun_to,
                     });
 
                     setNameEn(result.name_en);
@@ -378,7 +378,7 @@ const Restaurant = (props) => {
 
                 <div className="row">
                     <div className="col-12">
-                        <button type="button" className="btn btn-success float-right" style={{marginBottom: '80px'}} onClick={()=>saveRestaurantData()}>Submit</button>
+                        <button type="button" className="btn btn-default float-right" style={{marginBottom: '80px'}} onClick={()=>saveRestaurantData()}>Submit</button>
                     </div>
                 </div>
 

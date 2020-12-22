@@ -9,7 +9,10 @@ import { translate } from 'react-switch-lang';
 import configDB from '../../../config';
 
 import '../../../assets/css/mystyle.css'
+import AuthService from "../../../auth/auth_service";
 
+const Auth = new AuthService();
+console.log(Auth.getToken());
 const Sidebar = (props) => {
     const [margin, setMargin] = useState(0);
     const [width, setWidth] = useState(0);
@@ -20,6 +23,7 @@ const Sidebar = (props) => {
     const [mainmenu, setMainMenu] = useState(MENUITEMS);
     const wrapper = configDB.data.settings.sidebar.wrapper;
     const layout = 'ltr';
+
 
     useEffect(() => {
         window.addEventListener('resize', handleResize)
@@ -212,7 +216,7 @@ const Sidebar = (props) => {
 
                                             onClick={() => toggletNavActive(menuItem)}
                                         >
-                                            <menuItem.icon /><span>{props.t(menuItem.title)}</span>
+                                            <menuItem.icon /><span>{props.t(menuItem.title)} { Auth.isFreemium() && menuItem.title === 'History' ? <i className="icon-lock pull-right"></i> : ''}  </span>
                                             {menuItem.children ?
                                                 <i className="fa fa-angle-right pull-right"></i> : ''}
                                         </Link>
@@ -235,7 +239,7 @@ const Sidebar = (props) => {
                                                             className={childrenItem.active ? 'active' : ''}
                                                             onClick={() => toggletNavActive(childrenItem)}
                                                         >
-                                                            <i className="fa fa-circle"></i>{props.t(childrenItem.title)} </Link>
+                                                            <i className="fa fa-circle"></i>{props.t(childrenItem.title)} { Auth.isFreemium() && (childrenItem.title === 'User' || childrenItem.title === 'Income') ? <i className="icon-lock pull-right"></i> : ''}</Link>
                                                         : ''}
                                                     {childrenItem.children ?
                                                         <ul className={`sidebar-submenu ${childrenItem.active ? 'menu-open' : 'active'}`}>

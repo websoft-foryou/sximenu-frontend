@@ -208,7 +208,7 @@ class Category extends Component {
                                 <div className="card-header">
                                     <h5 className="float-left">Category</h5>
                                     <div className="float-right">
-                                        <button type="button" className="btn btn-success" onClick={() => this.addCategoryModal()}>New Category</button>
+                                        <button type="button" className="btn btn-default" onClick={() => this.addCategoryModal()}>New Category</button>
                                     </div>
                                 </div>
                                 <div className="card-body datatable-react">

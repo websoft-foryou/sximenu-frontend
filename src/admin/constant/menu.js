@@ -18,7 +18,7 @@ export const MENUITEMS = [
     {
         title: 'Analytics', icon: Edit, type: 'sub', active: false, children: [
             { path: '/admin/user_analytics', title: 'User', type: 'link' },
-            { path: '/admin/income_analytics', title: 'Income ', type: 'link' },
+            { path: '/admin/income_analytics', title: 'Income', type: 'link' },
             // { path: '/admin/touch_analytics', title: 'Touch Analytics', type: 'link' },
         ]
     },
@@ -29,7 +29,6 @@ export const MENUITEMS = [
         title: 'Settings', icon: Settings, type: 'sub', active: false, children: [
             { path: '/admin/email_setting', title: 'Email Setting', type: 'link' },
             { path: '/admin/password_setting', title: 'Password Setting', type: 'link' },
-            { path: '/admin/payment_setting', title: 'Payment Setting', type: 'link' },
         ]
     }
 ]

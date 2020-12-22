@@ -1,7 +1,7 @@
 import React, {Fragment, useState, useEffect} from 'react';
 import Breadcrumb from '../common/breadcrumb';
-
 import ReactTable from "react-table";
+import UnlockButton from "../common/unlockButton";
 
 import myAPI from "../../../Api";
 import 'react-table/react-table.css';
@@ -33,8 +33,8 @@ const UserHistory = (props) => {
     ];
 
     useEffect(() => {
-        getHistoryData();
-    }, []);
+        if (auth.isPremium()) getHistoryData();
+    },[]);
 
     const getHistoryData = async() => {
         setLoading(true)
@@ -80,7 +80,10 @@ const UserHistory = (props) => {
                             <div className="card-header">
                                 <h5 className="float-left">User History</h5>
                             </div>
-                            <div className="card-body datatable-react">
+                            {auth.isFreemium() &&
+                                <UnlockButton title="unlock"/>
+                            }
+                            <div className={`card-body datatable-react ${auth.isFreemium() ? `freemium_status` : `` }` }>
                                 <ReactTable
                                     data={tableData}
                                     columns={columns}

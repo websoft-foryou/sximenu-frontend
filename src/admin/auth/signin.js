@@ -4,7 +4,6 @@ import logo from '../assets/images/endless-logo.png';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { withRouter } from "react-router";
 import AuthService from './auth_service';
 import myAPI from "../../Api";
 
@@ -18,9 +17,6 @@ const Signin = () => {
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
-
-
-
     const loginAuth = async () => {
         if (email === '') {
             toast.warn("Oppss.. Please enter the email.", {autoClose: 2000});
@@ -30,7 +26,6 @@ const Signin = () => {
             toast.warn("Oppss.. Please enter the password.", {autoClose: 2000});
             return;
         }
-
 
         try {
             setLoading(true);

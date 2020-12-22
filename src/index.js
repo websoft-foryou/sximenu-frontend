@@ -17,10 +17,13 @@ import AboutUs from "./view/AboutUs";
 import SignUp from "./view/SignUp";
 import Admin from "./admin/index";
 import EmailVerification from "./view/EmailVerificatoin";
+import PaymentSuccess from "./view/PaymentSuccess";
+import AuthService from "./admin/auth/auth_service";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './assets/scss/style.scss';
 
+const Auth = new AuthService();
 
 ReactDOM.render(<Provider store={store}>
   <Router>
@@ -31,11 +34,17 @@ ReactDOM.render(<Provider store={store}>
       <Route path="/restaurant/:id" exact children={<MenuResult/>} />
       <Route path="/restaurant/:id/:id" children={<ProductListing/>} />
 
-      <Route path="/signup" component={SignUp} />
+      <Route path="/signup" children={<SignUp success="none" />} />
+      <Route path="/signup/:success" children={<SignUp success="true" /> } />
       <Route path="/admin" component={Admin} />
-      <Route path="/email-activate/:token" children={<EmailVerification />} />
+      <Route path="/email-activate/:token" children={<EmailVerification verifyType="newverify" />} />
+      <Route path="/email-reactivate/:token" children={<EmailVerification verifyType="reverify" />} />
+      <Route path="/payment_success" children={<PaymentSuccess section="membership" success="true" auth={Auth}/>} />
+      <Route path="/payment_error" children={<PaymentSuccess section="membership" success="error" auth={Auth}/>} />
+      <Route path="/payment_success_signup" children={<PaymentSuccess section="signup" success="true" auth={null}/>} />
+      <Route path="/payment_error_signup" children={<PaymentSuccess section="signup" success="error" auth={null}/>} />
 
-      <Route path="*">404 | Not found</Route>
+      <Route path="*">404 | Not found123</Route>
     </Switch>
   </Router>
 </Provider>, document.getElementById('root'));
