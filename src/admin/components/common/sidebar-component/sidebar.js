@@ -30,26 +30,10 @@ const Sidebar = (props) => {
         handleResize();
 
         var currentUrl = window.location.pathname;
-        // eslint-disable-next-line
-        // mainmenu.filter(items => {
-        //     if (items.path === currentUrl)
-        //         setNavActive(items)
-        //     if (!items.children) return false
-        //     // eslint-disable-next-line
-        //     items.children.filter(subItems => {
-        //         if (subItems.path === currentUrl)
-        //             setNavActive(subItems)
-        //         if (!subItems.children) return false
-        //         // eslint-disable-next-line
-        //         subItems.children.filter(subSubItems => {
-        //             if (subSubItems.path === currentUrl)
-        //                 setNavActive(subSubItems)
-        //         })
-        //     })
-        // })
+
 
         MENUITEMS.filter(menuItem => {
-            console.log(sessionStorage.getItem('welcome'));
+
             if (sessionStorage.getItem('welcome') === 'on') {
                 MENUITEMS.forEach(a => {
                     if (!a.children && a.path !== '/admin/dashboard') a.active = false;

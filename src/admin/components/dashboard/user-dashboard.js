@@ -21,7 +21,7 @@ const UserDashboard = (props) => {
     const [totalIncomes, setTotalIncomes] = useState(0);
     const [lastActivies, setLastActivities] = useState([]);
     const [incomeData, setIncomeData] = useState([]);
-    const [recentVisitors, setRecentVisitors] = useState([]);
+    const [recentReviews, setRecentReviews] = useState([]);
     const [countryData, setCountryData] = useState([]);
     const [deviceLabel, setDeviceLabel] = useState([]);
     const [deviceData, setDeviceData] = useState([]);
@@ -42,7 +42,7 @@ const UserDashboard = (props) => {
                     setTotalVisitors(response.data.result.total_visitors);
                     setTotalIncomes(response.data.result.total_incomes);
                     setLastActivities(response.data.result.last_activies);
-                    setRecentVisitors(response.data.result.recent_visitors);
+                    setRecentReviews(response.data.result.recent_reviews);
                     setBrowserData(response.data.result.browser_data);
                     setPlatformData(response.data.result.platform_data);
 
@@ -465,14 +465,13 @@ const UserDashboard = (props) => {
                                     <div className="card-header card-header-border">
                                         <div className="row">
                                             <div className="col-sm-7">
-                                                <h5>Recent 5 Visitors</h5>
+                                                <h5>Recent 5 Reviews</h5>
                                             </div>
                                             {props.auth.isPremium() &&
                                             <div className="col-sm-5">
                                                 <div className="pull-right right-header">
                                                     <div className="onhover-dropdown">
-                                                        <button className="btn btn-default" type="button">Details
-                                                        </button>
+                                                        <button className="btn btn-default" type="button">Details </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -484,7 +483,7 @@ const UserDashboard = (props) => {
                                     }
                                     <div className={`card-body  recent-notification ${props.auth.isFreemium() ? `freemium_status` : `` }` }>
                                         {
-                                            recentVisitors.map((visitor, index) => {
+                                            recentReviews.map((visitor, index) => {
                                                 return (
                                                     <div className="media" key={`last-activity-${visitor.id}`}>
                                                         <h6>{visitor.activity_date}</h6>
