@@ -153,4 +153,8 @@ export default {
         axios.get(`${BASE_API_URL}/get_recent_data`, {
             headers: { Authorization: `Bearer ${token}` }
         }),
+    sendQrcode:(qrdata, token) =>
+        axios.post(`${BASE_API_URL}/send_qrcode`, qrdata, {
+            headers: { Authorization: `Bearer ${token}` }
+        }),
 }

@@ -3,6 +3,7 @@ import Breadcrumb from '../common/breadcrumb';
 import CountUp from 'react-countup';
 import { Line } from 'react-chartjs-2';
 import { Chart } from "react-google-charts"; // reference url: https://github.com/rakannimer/react-google-charts/blob/master/src/docs/Charts/GeoChart.mdx
+import  Bootbox  from  'bootbox-react';
 import { Navigation, Box, Users } from 'react-feather';
 import { MessageCircle } from 'react-feather';
 import QRCode from 'qrcode.react';
@@ -30,6 +31,7 @@ const UserDashboard = (props) => {
     const [platformLabel, setPlatformLabel] = useState([]);
     const [platformData, setPlatformData] = useState([]);
     const [qrcodeValue, setQrcodeValue] = useState('');
+    const [showQrcodeSendBox, setShowQrcodeSendBox] = useState(false);
 
     const getRecentData = () => {
         setLoading(true);
@@ -220,6 +222,35 @@ const UserDashboard = (props) => {
         downloadLink.click();
         document.body.removeChild(downloadLink);
     };
+
+    const sendQRCode = (result) => {
+        if (result === null) {
+            return setShowQrcodeSendBox(false);
+        }
+        if (result === '') {
+            toast.warn('Please enter the email');
+            return setShowQrcodeSendBox(false);
+        }
+        setShowQrcodeSendBox(false);
+        setLoading(true);
+
+        const canvas = document.getElementById("my_qrcode");
+        myAPI.sendQrcode({
+            email: result,
+            qrcode: canvas.toDataURL()
+        }, props.auth.getToken()).then(response => {
+            setLoading(false);
+            if (response.data.success === true) {
+                toast.success('Sented successfully');
+            }
+            else
+                toast.error('Email sending failure');
+        }).catch(() => {
+            setLoading(false);
+        });
+
+    };
+
 
     return (
         <Fragment>
@@ -423,7 +454,8 @@ const UserDashboard = (props) => {
                                             />
                                         </div>
                                         <div className="text-center">
-                                            <a className="btn btn-default radius" onClick={downloadQR}> Download QR </a>
+                                            <a className="btn btn-default radius" onClick={downloadQR}> Download QRCode </a> &nbsp;&nbsp;
+                                            <a className="btn btn-default radius" onClick={() => setShowQrcodeSendBox(true)}> Send QRCode </a>
                                         </div>
                                     </div>
                                 </div>
@@ -503,7 +535,11 @@ const UserDashboard = (props) => {
                     </div>
                 </div>
             </div>
-
+            <Bootbox show={showQrcodeSendBox}
+                     type={"prompt"}
+                     message={"Please enter the email."}
+                     onPrompt={sendQRCode}
+            />
         </Fragment>
     );
 };

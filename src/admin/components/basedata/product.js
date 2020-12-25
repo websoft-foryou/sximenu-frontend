@@ -308,11 +308,11 @@ class Product extends Component {
                             <div className="card">
                                 <div className="card-body">
                                     <Slider {...this.slider_setting}>
-                                        <img key={`allcategory`} className={`category-carousel-image ${this.state.selected_category == 0 ? 'slider-selected' : '' }`}
+                                        <img key={`allcategory`} className={`category-carousel-image ${this.state.selected_category === 0 ? 'slider-selected' : '' }`}
                                              src={AllCategoryImage} alt="All Category" onClick={() => this.getProducts(0)}/>
                                         {
                                             this.state.category_list.map((category, index) => {
-                                                return <img key={`${category.id}`} className={`category-carousel-image ${this.state.selected_category == category.id ? 'slider-selected' : '' }`}
+                                                return <img key={`${category.id}`} className={`category-carousel-image ${this.state.selected_category === category.id ? 'slider-selected' : '' }`}
                                                             src={category.image} alt="" onClick={() => this.getProducts(category.id)}/>
                                             })
                                         }
