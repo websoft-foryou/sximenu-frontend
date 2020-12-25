@@ -139,7 +139,7 @@ class GoogleMaps extends Component {
   };
 
   handleOnchangeInput = (e) => {
-    console.log('my location = ' + e.target.value);
+    //console.log('my location = ' + e.target.value);
     this.setState({[e.target.name]: e.target.value, fullAddress: e.target.value}, () => {
       // console.log('= state = ')
       // console.log(this.state);

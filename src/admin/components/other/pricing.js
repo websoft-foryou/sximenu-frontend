@@ -96,7 +96,10 @@ const Pricing = (props) => {
             if (response.data.success) {
                 setIsPremium(false);
                 setIsFreemium(true);
-                getMembership();
+                let token = auth.getToken();
+                auth.destroyAuthentication();
+                auth.finishAuthentication(token, "0");
+                window.location.reload();
             }
             else
                 toast.error(response.data.result);
@@ -110,7 +113,7 @@ const Pricing = (props) => {
                 // Card
                 await myAPI.handleCardPayment({
                     amount: amount,
-                    holer_name: holderName,
+                    holder_name: holderName,
                     card_number: cardNumber,
                     cvc_number: cvcNumber,
                     expire_year: expireYear,
@@ -124,7 +127,10 @@ const Pricing = (props) => {
                     if (response.data.success) {
                         setIsPremium(true);
                         setIsFreemium(false);
-                        getMembership();
+                        let token = auth.getToken();
+                        auth.destroyAuthentication();
+                        auth.finishAuthentication(token, "1");
+                        window.location.reload();
                     }
                     else
                         toast.error(response.data.result);
@@ -136,7 +142,7 @@ const Pricing = (props) => {
                     amount: amount
                 }, auth.getToken()).then(response => {
                     if (response.data.success) {
-                        window.location.href = response.data.result;
+                        window.location.href = response.data.result; //http://serverip/payment_success?....
                     }
                     else
                         toast.error(response.data.result);
@@ -222,7 +228,7 @@ const Pricing = (props) => {
                                             <div className="form-row">
                                                 <div className="col-12 col-lg-6">
                                                     <div className="form-group">
-                                                        <label className="col-form-label" htmlFor="holer_name">Holder Name: </label>
+                                                        <label className="col-form-label" htmlFor="holder_name">Holder Name: </label>
                                                         <input className="form-control" type="text" required value={holderName} onChange={e =>setHolderName(e.target.value)} />
                                                     </div>
                                                 </div>
@@ -311,7 +317,7 @@ const Pricing = (props) => {
 
                                         <div className="form-row">
                                             <div className="col-12 m-t-20">
-                                                <button type="button" className="btn btn-success float-right" onClick={() => upgradePremium()}>Submit</button>
+                                                <button type="button" className="btn btn-default float-right" onClick={() => upgradePremium()}>Submit</button>
                                             </div>
                                         </div>
 

@@ -5,7 +5,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart } from "react-google-charts"; // reference url: https://github.com/rakannimer/react-google-charts/blob/master/src/docs/Charts/GeoChart.mdx
 import { Navigation, Box, Users } from 'react-feather';
 import { MessageCircle } from 'react-feather';
-
+import QRCode from 'qrcode.react';
 import configDB from '../../config';
 import myAPI from "../../../Api";
 import {toast} from "react-toastify";
@@ -29,6 +29,7 @@ const UserDashboard = (props) => {
     const [browserData, setBrowserData] = useState([]);
     const [platformLabel, setPlatformLabel] = useState([]);
     const [platformData, setPlatformData] = useState([]);
+    const [qrcodeValue, setQrcodeValue] = useState('');
 
     const getRecentData = () => {
         setLoading(true);
@@ -108,8 +109,30 @@ const UserDashboard = (props) => {
         }
     };
 
+    const getRestaurantInfo = () => {
+        setLoading(true)
+        try {
+            myAPI.getRestaurantInformation(props.auth.getToken()).then(response => {
+                if (response.data.success) {
+                    let result = response.data.result;
+                    let qrcode = result.id + '@&' + result.name_en + '@&' + result.name_hb;
+                    setQrcodeValue(qrcode);
+                }
+                else
+                    toast.error(response.data.result);
+            });
+
+        } catch(e) {
+            toast.error(e.message);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
     useEffect(() => {
         if (props.auth.isPremium()) getRecentData();
+        getRestaurantInfo();
     }, []);
 
     const incomeChartData = {
@@ -183,7 +206,20 @@ const UserDashboard = (props) => {
         plugins: {
             datalabels: { display: false, }
         }
-    }
+    };
+
+    const downloadQR = () => {
+        const canvas = document.getElementById("my_qrcode");
+        const pngUrl = canvas
+            .toDataURL("image/png")
+            .replace("image/png", "image/octet-stream");
+        let downloadLink = document.createElement("a");
+        downloadLink.href = pngUrl;
+        downloadLink.download = "qrcode.png";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    };
 
     return (
         <Fragment>
@@ -370,6 +406,29 @@ const UserDashboard = (props) => {
                     </div>
 
                     <div className="col-12 col-lg-4">
+                        <div className="row">
+                            <div className="col-12">
+                                <div className="card">
+                                    <div className="card-header">
+                                        <h5>QR Code</h5>
+                                    </div>
+                                    <div className="card-body activity-scroll">
+                                        <div className="text-center">
+                                            <QRCode
+                                                id="my_qrcode"
+                                                value={qrcodeValue}
+                                                size={290}
+                                                level={"H"}
+                                                includeMargin={true}
+                                            />
+                                        </div>
+                                        <div className="text-center">
+                                            <a className="btn btn-default radius" onClick={downloadQR}> Download QR </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div className="row">
                             <div className="col-12">
                                 <div className="card">

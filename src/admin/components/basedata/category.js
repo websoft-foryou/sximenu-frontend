@@ -7,11 +7,14 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import ImageUploader from "react-images-upload";
 
+import NewCategoryImage from "../../assets/images/category.png";
 import myAPI from "../../../Api";
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-table/react-table.css';
 import 'react-toastify/dist/ReactToastify.css';
 import '../../assets/css/mystyle.css';
+import '../../assets/css/dashboard.scss';
+
 
 // reference url: https://developer.aliyun.com/mirror/npm/package/react-table-v6
 
@@ -138,25 +141,28 @@ class Category extends Component {
         this.toggleModal();
     };
 
-    editCategoryModeal = (row) => {
+    editCategoryModeal = (item) => {
 
         let image = [];
-        image.push(row.original.image);
+        image.push(item.image);
         this.setState({
-            category_name_en: row.original.category_name_en,
-            category_name_hb: row.original.category_name_hb,
+            category_name_en: item.category_name_en,
+            category_name_hb: item.category_name_hb,
             initial_image: image
         });
 
         this.category_image = image;
-        this.category_id = row.original.category_id;
+        this.category_id = item.category_id;
         this.toggleModal();
 
     };
 
-    toggleConfirm = (row) => {
-        if (row) this.category_id = row.original.category_id;
-        this.setState({ showConfirm: true })
+    toggleConfirm = (item) => {
+        if (item) {
+            this.category_id = item.category_id;
+            this.setState({ showConfirm: true })
+        }
+
     };
 
     handleImageUpload(pictureFiles, pictureDataURLs) {
@@ -205,25 +211,66 @@ class Category extends Component {
                     <div className="row">
                         <div className="col-sm-12">
                             <div className="card">
-                                <div className="card-header">
-                                    <h5 className="float-left">Category</h5>
-                                    <div className="float-right">
-                                        <button type="button" className="btn btn-default" onClick={() => this.addCategoryModal()}>New Category</button>
+                                <div className="card-body">
+
+                                    <div className="row">
+                                        <div className="col-6 col-sm-4 col-md-3 col-lg-2" key={`category_box_0`}>
+                                            <div className="card category-box">
+                                                <div className="card-body category-body">
+                                                    <img key={`category_image_add`}  src={NewCategoryImage} alt="Category" />
+                                                    <div className="category-body-hover">
+                                                        <ul>
+                                                            <li>
+                                                                <button className="btn" type="button" onClick={() => this.addCategoryModal()}>
+                                                                    <i className="fa fa-plus"></i>
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div className="card-footer category-footer text-center" style={{margin: '15px'}}>
+                                                    <button type="button" className="btn btn-default" onClick={() => this.addCategoryModal()}>New Category</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {
+                                            this.state.table_data.map((item, i) =>
+
+                                                <div className="col-6 col-sm-4 col-md-3 col-lg-2" key={`category_box_${item.category_id}`}>
+                                                    <div className="card category-box">
+                                                        <div className="card-body category-body">
+                                                            <img src={item.image}  />
+                                                            <div className="category-body-hover">
+                                                                <ul>
+                                                                    <li>
+                                                                        <button className="btn" type="button" onClick={() => this.editCategoryModeal(item) }>
+                                                                            <i className="fa fa-edit"></i>
+                                                                        </button>
+                                                                    </li>
+                                                                    <li>
+                                                                        <button className="btn" type="button" onClick={() => this.toggleConfirm(item)}>
+                                                                            <i className="fa fa-scissors"></i>
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                        <div className="card-footer category-footer">
+                                                            <span><label>EN:</label> {item.category_name_en}</span>
+                                                            <span><label>HB:</label> {item.category_name_hb}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )
+                                        }
+
                                     </div>
-                                </div>
-                                <div className="card-body datatable-react">
-                                    <ReactTable
-                                        data={this.state.table_data}
-                                        columns={columns}
-                                        defaultPageSize={10}
-                                        className={'-striped -highlight'}
-                                        showPagination={true}
-                                    />
                                 </div>
 
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <ToastContainer />

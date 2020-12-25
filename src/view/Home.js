@@ -75,6 +75,7 @@ const Home = (props) => {
 
   const handleScan = data => {
     if (data) {
+      console.log('qrcode = ' + data);
       props.history.push('/restaurant/' + data);
     }
   };

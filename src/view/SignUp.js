@@ -37,7 +37,6 @@ class SignUp extends Component {
       this.year_array.push(i);
     }
 
-    console.log(this.props.success);
     if (this.props.success === "true") {
       toast.info('We sent a verification email to your account. Please check your email inbox.', {autoClose: 5000});
     }

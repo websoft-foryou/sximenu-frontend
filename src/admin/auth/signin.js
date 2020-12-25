@@ -36,6 +36,7 @@ const Signin = () => {
 
                 if (response.data.success === true) {
                     Auth.finishAuthentication(response.data.result.token, response.data.result.membership);
+                    sessionStorage.setItem('welcome', 'on');
                     history.push('/admin/dashboard');
                 }
                 else

@@ -15,7 +15,7 @@ class OpeningHour extends Component {
 
   handleToggleOnOff = () => {
     this.setState({dayIsOpen: !this.state.dayIsOpen}, () => {
-      console.log('Hello', this.state.dayIsOpen);
+      //console.log('Hello', this.state.dayIsOpen);
     })
   };
 

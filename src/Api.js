@@ -9,8 +9,8 @@ export default {
         axios.get(`${BASE_API_URL}/common_categories`, {
             headers: { Authorization: `Bearer ${token}` }
         }),
-    getCommonProducts:(token) =>
-        axios.get(`${BASE_API_URL}/common_products`, {
+    getProducts:(category_id, token) =>
+        axios.get(`${BASE_API_URL}/category_products/${category_id}`,  {
             headers: { Authorization: `Bearer ${token}` }
         }),
 

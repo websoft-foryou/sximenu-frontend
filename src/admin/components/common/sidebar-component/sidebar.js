@@ -12,7 +12,7 @@ import '../../../assets/css/mystyle.css'
 import AuthService from "../../../auth/auth_service";
 
 const Auth = new AuthService();
-console.log(Auth.getToken());
+
 const Sidebar = (props) => {
     const [margin, setMargin] = useState(0);
     const [width, setWidth] = useState(0);
@@ -31,21 +31,45 @@ const Sidebar = (props) => {
 
         var currentUrl = window.location.pathname;
         // eslint-disable-next-line
-        mainmenu.filter(items => {
-            if (items.path === currentUrl)
-                setNavActive(items)
-            if (!items.children) return false
-            // eslint-disable-next-line
-            items.children.filter(subItems => {
-                if (subItems.path === currentUrl)
-                    setNavActive(subItems)
-                if (!subItems.children) return false
-                // eslint-disable-next-line
-                subItems.children.filter(subSubItems => {
-                    if (subSubItems.path === currentUrl)
-                        setNavActive(subSubItems)
-                })
-            })
+        // mainmenu.filter(items => {
+        //     if (items.path === currentUrl)
+        //         setNavActive(items)
+        //     if (!items.children) return false
+        //     // eslint-disable-next-line
+        //     items.children.filter(subItems => {
+        //         if (subItems.path === currentUrl)
+        //             setNavActive(subItems)
+        //         if (!subItems.children) return false
+        //         // eslint-disable-next-line
+        //         subItems.children.filter(subSubItems => {
+        //             if (subSubItems.path === currentUrl)
+        //                 setNavActive(subSubItems)
+        //         })
+        //     })
+        // })
+
+        MENUITEMS.filter(menuItem => {
+            console.log(sessionStorage.getItem('welcome'));
+            if (sessionStorage.getItem('welcome') === 'on') {
+                MENUITEMS.forEach(a => {
+                    if (!a.children && a.path !== '/admin/dashboard') a.active = false;
+                    if (a.children) {
+                        a.children.forEach(b => {
+                            if (!b.children && b.path !== '/admin/dashboard') b.active = false;
+                            if (b.children) {
+                                b.children.forEach(c => {
+                                    if (!c.children && c.path !== '/admin/dashboard') c.active = false;
+                                })
+                            }
+                        })
+                    }
+                });
+
+                if (menuItem.path === '/admin/dashboard')
+                    menuItem.active = true;
+                if (menuItem.children)
+                    menuItem.active = true;
+            }
         })
 
         setTimeout(() => {
@@ -64,10 +88,8 @@ const Sidebar = (props) => {
         }, 500)
 
         return () => {
-            // eslint-disable-next-line
             window.addEventListener('resize', handleResize)
         }
-        // eslint-disable-next-line
     }, []);
 
     const handleResize = () => {
@@ -75,11 +97,11 @@ const Sidebar = (props) => {
     }
 
     const setNavActive = (item) => {
-        // eslint-disable-next-line
+        // expand selected items
         MENUITEMS.filter(menuItem => {
             // eslint-disable-next-line
-            if (menuItem != item)
-                menuItem.active = false
+            if (menuItem === item)
+                item.active = true
             if (menuItem.children && menuItem.children.includes(item))
                 menuItem.active = true
             if (menuItem.children) {
@@ -93,33 +115,28 @@ const Sidebar = (props) => {
                 })
             }
         })
-        //item.active = !item.active
+
         setMainMenu({ mainmenu: MENUITEMS })
 
     }
 
     // Click Toggle menu
     const toggletNavActive = (item) => {
-        if (!item.active) {
-            MENUITEMS.forEach(a => {
-                if (MENUITEMS.includes(item))
-                    a.active = false
-                if (!a.children) return false
-                a.children.forEach(b => {
-                    if (a.children.includes(item)) {
-                        b.active = false
-                    }
-                    if (!b.children) return false
-                    b.children.forEach(c => {
-                        if (b.children.includes(item)) {
-                            c.active = false
-                        }
-                    })
+        sessionStorage.setItem('welcome', 'off');
+
+        // collapse all items
+        MENUITEMS.forEach(a => {
+            a.active = false;
+            if (!a.children) return false
+            a.children.forEach(b => {
+                b.active = false;
+                if (!b.children) return false
+                b.children.forEach(c => {
+                    c.active = false;
                 })
-            });
-        }
-        item.active = !item.active
-        setMainMenu({ mainmenu: MENUITEMS })
+            })
+        });
+        setNavActive(item);
     }
 
     const scrollToRight = () => {
