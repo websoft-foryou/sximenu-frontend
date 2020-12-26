@@ -707,14 +707,11 @@
 }
 
 .payment-types {
-  display: flex;
-  margin: 0 -15px;
   margin-bottom: 15px;
 
   .payment-type {
-    width: 50%;
-    flex: 0 0 50%;
-    padding: 0 15px;
+    width: 100%;
+    flex: 0 0 100%;
     position: relative;
     margin-bottom: 15px;
 

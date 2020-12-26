@@ -51,7 +51,7 @@ const EmailVerification = (props) => {
                             <h2 className="text-center" style={{color: `#0454a4`}}>{ renderVerifyResult() }</h2>
                             <p></p>
                             <p className="text-center" style={{marginTop: 100}}>
-                                <Link to="/" className="btn btn-success text-center">Go to Home Page</Link>
+                                <Link to="/admin/login" className="btn btn-success text-center">Go to Login</Link>
                             </p>
                         </div>
                     </div>

@@ -323,7 +323,7 @@ class Product extends Component {
                     </div>
 
                     <div className="row">
-                        <div className="col-6 col-sm-4 col-md-3 col-lg-2" key={`product_box_0`}>
+                        <div className="col-12 col-sm-6 col-md-4 col-lg-2" key={`product_box_0`}>
                             <div className="card product-box">
                                 <div className="card-body product-body">
                                     <img key={`product_image_add`}  src={NewProductImage} alt="Product" />
@@ -345,7 +345,7 @@ class Product extends Component {
 
                         {
                         this.state.table_data.map((item, i) =>
-                            <div className="col-6 col-sm-4 col-md-3 col-lg-2" key={`product_box_${item.product_id}`}>
+                            <div className="col-12 col-sm-6 col-md-4 col-lg-2" key={`product_box_${item.product_id}`}>
                                 <div className="card product-box">
                                     <div className="card-body product-body">
                                         <img key={`product_image_${item.product_id}_${i}`}  src={item.product_image[0]} alt="Product" />

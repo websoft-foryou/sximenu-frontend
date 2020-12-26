@@ -117,7 +117,8 @@ const UserDashboard = (props) => {
             myAPI.getRestaurantInformation(props.auth.getToken()).then(response => {
                 if (response.data.success) {
                     let result = response.data.result;
-                    let qrcode = result.id + '@&' + result.name_en + '@&' + result.name_hb;
+                    let qrcode = "http://localhost:3000/restaurant/" + result.id;
+                    //let qrcode = "http://atarit.com/restaurant/" + result.id;
                     setQrcodeValue(qrcode);
                 }
                 else

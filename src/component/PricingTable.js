@@ -5,7 +5,7 @@ import {FaCheck, FaTimes} from "react-icons/fa";
 
 const PricingTable = function ({plan, price, shortText, planPeriod, featureList, isFeatured, isPurchased, handleSelectPlan}) {
   return (
-    <div className={isFeatured ? 'pricing-table highlight' : 'pricing-table'}>
+    <div className={isFeatured ? 'pricing-table highlight text-center' : 'pricing-table text-center'}>
       <div className="table-header">
         <h4 className="title">{plan}</h4>
         <span className="price">{price > 0 ? price : 'Free'}
@@ -13,6 +13,14 @@ const PricingTable = function ({plan, price, shortText, planPeriod, featureList,
         </span>
         <span className="text d-block">{shortText}</span>
       </div>
+      {isPurchased &&
+        <div className="purchased">You have <b>{plan}</b> now.</div>
+      }
+      {!isPurchased &&
+        <div className="action">
+            <Button className="btn btn-lg" onClick={() => handleSelectPlan(price)} variant={isFeatured ? 'success' : 'success'} block>Get Started</Button>
+        </div>
+      }
       <ul className="features-list">
         {featureList.map((item, index) => {
           return (
@@ -24,16 +32,6 @@ const PricingTable = function ({plan, price, shortText, planPeriod, featureList,
           )
         })}
       </ul>
-      {isPurchased &&
-        <div className="purchased">You have <b>{plan}</b> now.</div>
-      }
-      {!isPurchased &&
-      <div className="action">
-        <Button
-            onClick={() => handleSelectPlan(price)}
-            variant={isFeatured ? 'success' : 'success'} block>Get Started</Button>
-      </div>
-      }
 
 
     </div>

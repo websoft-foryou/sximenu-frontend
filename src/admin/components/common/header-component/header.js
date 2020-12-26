@@ -36,9 +36,9 @@ const Header = () => {
           <div className="mobile-sidebar d-block">
             <div className="media-body text-right switch-sm">
               <label className="switch">
-                <a href="javascript" onClick={() => openCloseSidebar()}>
+                <span style={{cursor: 'pointer'}} onClick={() => openCloseSidebar()}>
                   <AlignLeft />
-                </a>
+                </span>
               </label>
             </div>
           </div>

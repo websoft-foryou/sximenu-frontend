@@ -42,7 +42,9 @@
     text-transform: uppercase;
     font-size: 13px;
 }
-
+.blur-up.lazyloaded {
+    width: 80%;
+}
 /* END */
 
 /* BEGIN(overlay) */
@@ -87,6 +89,7 @@
    border-radius: 10px;
 }
 /* End */
+
 
 /* BEGIN(category) */
 .category-box {
@@ -364,6 +367,7 @@
     font-size: 18px;
     background: #fbb105;
     color: #4c3303;
+    margin-bottom: 25px;
 }
 /* END */
 
@@ -410,3 +414,4 @@
     color: #fbc3a0;
 }
 /* END */
+

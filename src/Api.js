@@ -33,6 +33,8 @@ export default {
         axios.post(`${BASE_API_URL}/complete_signup_payment`, payment_data, {
             headers: { 'X-CSRF-TOKEN': payment_token }
         }),
+    upgradeMembership: (payment_data) =>
+        axios.post(`${BASE_API_URL}/upgrade_membership`, payment_data),
 
 
     // category management

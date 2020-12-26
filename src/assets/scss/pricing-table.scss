@@ -1,32 +1,50 @@
 @import "inc/variables";
+.best-value {
+    position: absolute;
+    width: 92%;
+    font-size: .875rem;
+    min-height: 33px;
+    line-height: 2.0625rem;
+    top: -33px;
+    left: 15px;
+    background-color: #ff9b0d;
+    border-radius: 6px 6px 0 0;
+    text-align: center;
+    color: white;
+}
 
 .pricing-table {
   width: 100%;
   background-color: #ffffff;
-  border: 1px solid $defaultLightColor;
+  //border: 1px solid $defaultLightColor;
   height: calc(100% - 30px);
   margin-bottom: 30px;
-  border-radius: 10px;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px 0.5px rgba(0,0,0,.2);
 
   .table-header {
-    padding: 40px 30px 25px;
-    text-align: center;
-    background-color: $defaultColor;
-    border-radius: 10px 10px 0 0;
+    //padding: 40px 30px 25px;
+    //text-align: center;
+    //background-color: $defaultColor;
+    //border-radius: 10px 10px 0 0;
 
     .title {
-      font-size: 1rem;
+      font-size: 24px;
       text-transform: uppercase;
       opacity: .7;
-      margin-bottom: 15px;
-      color: #ffffff;
+        padding: 30px;
+        font-weight: 600;
+      //margin-bottom: 15px;
+      //color: #ffffff;
     }
 
     .price {
-      font-size: 2.5rem;
-      color: #ffffff;
-      font-weight: bold;
-      line-height: 1;
+      font-size: 40px;
+      color: #2f2f2f;
+        padding: 40px;
+        display: block;
+      //font-weight: bold;
+      //line-height: 1;
 
       small {
         transform: translateY(-6px);
@@ -41,32 +59,27 @@
   }
 
   &.highlight {
-    border: 1px solid $secondaryLightColor;
+      box-shadow:  0 6px 16px 0.5px rgba(0,0,0,.2);
 
-    .table-header {
-      background-color: $secondaryColor;
-
-      .title {
-        color: #ffffff;
-      }
-
-      .price {
-        color: #ffffff;
-      }
-    }
   }
+
 
   .action {
     padding: 15px 30px 30px;
   }
+  .action button {
+    padding: 1.55rem 4rem;
+    border-radius: 3px !important;
+  }
 
   .features-list {
     list-style-type: none;
-    padding: 30px 30px 15px;
+    padding: 20px 40px 60px 40px;
 
     li {
       padding-left: 24px;
       position: relative;
+      text-align: left;
 
       &:not(:last-child) {
         margin-bottom: 12px;

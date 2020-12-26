@@ -4,7 +4,7 @@ import logo_compact from '../../../assets/images/logo/compact-logo.png';
 
 import UserPanel from './userPanel';
 import { MENUITEMS } from '../../../constant/menu';
-import { Link } from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
 import { translate } from 'react-switch-lang';
 import configDB from '../../../config';
 
@@ -181,10 +181,10 @@ const Sidebar = (props) => {
             <div className="page-sidebar">
                 <div className="main-header-left d-none d-lg-block">
                     <div className="logo-wrapper compactLogo">
-                        <Link to="/admin/dashboard">
+                        <a href='/'>
                             <img className="blur-up lazyloaded" src={logo_compact} alt="" />
                             <img className="blur-up lazyloaded" src={logo} alt="" />
-                        </Link>
+                        </a>
                     </div>
                 </div>
                 <div className="sidebar custom-scrollbar">

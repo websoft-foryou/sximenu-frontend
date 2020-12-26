@@ -15,7 +15,6 @@ import visa from "../assets/img/visa.svg";
 import PayPal from "../assets/img/PayPal.svg";
 import {ToastContainer, toast} from "react-toastify";
 import {FiArrowLeft} from "react-icons/fi";
-
 import { Alert } from 'reactstrap';
 import myAPI from "../Api";
 
@@ -37,9 +36,6 @@ class SignUp extends Component {
       this.year_array.push(i);
     }
 
-    if (this.props.success === "true") {
-      toast.info('We sent a verification email to your account. Please check your email inbox.', {autoClose: 5000});
-    }
     this.state = {
       basicPlan: [ { isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: false, text: 'Lorem ipsum dolor sit.'},
         {isActive: false, text: 'Lorem ipsum dolor sit.'} ],
@@ -48,7 +44,7 @@ class SignUp extends Component {
       diamondPlan: [{ isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: true, text: 'Lorem ipsum dolor sit.' }, { isActive: true, text: 'Lorem ipsum dolor sit.'},
         {isActive: true, text: 'Lorem ipsum dolor sit.'} ],
 
-      planValue: null,
+      planValue: 0,
       isPlanSelected: false,
       isPaymentMethodPayPal: false,
       redirect_url: null,
@@ -67,6 +63,7 @@ class SignUp extends Component {
       email: '',
       phone_number: '',
       password: '',
+      password_confirmation: '',
       loading: false,
       signup_error: '',
       signup_ok: false,
@@ -91,7 +88,7 @@ class SignUp extends Component {
   };
 
   handleGoBack = () => {
-    this.setState({isPlanSelected: false})
+    this.setState({isPlanSelected: false});
   };
 
   handleChangePaymentMethod = (method) => {
@@ -110,6 +107,51 @@ class SignUp extends Component {
     this.setState({restaurant_images: pictureDataURLs});
   }
 
+  onPayNow = async () => {
+      let payment_data = {};
+      this.setState({ loading: true});
+      try {
+          payment_data.membership = '1';
+          payment_data.amount = this.amount;
+
+          if (this.state.isPaymentMethodPayPal) {
+              payment_data.payment_method = 'paypal';
+              await myAPI.upgradeMembership(payment_data).then(response => {
+                  if (response.data.success === false)
+                      this.setState({ signup_error: response.data.result });
+                  else {
+                      sessionStorage.setItem('user_id', response.data.result.user_id);
+                      window.location.href = response.data.result.redirect_url;
+                  }
+              });
+          }
+          else {
+              payment_data.payment_method = 'card';
+              payment_data.holder_name = this.state.holderName;
+              payment_data.card_number = this.state.cardNumber;
+              payment_data.expire_year = this.state.expireYear;
+              payment_data.expire_month = this.state.expireMonth;
+              payment_data.cvc_number = this.state.cvcNumber;
+              payment_data.billing_country = this.state.billingCountry;
+              payment_data.billing_address = this.state.billingAddress;
+              payment_data.billing_city = this.state.billingCity;
+              payment_data.billing_post_code = this.state.billingPostCode;
+              await myAPI.upgradeMembership(payment_data).then(response => {
+                  if (response.data.success === false)
+                      this.setState({ signup_error: response.data.result });
+                  else {
+                      const history = this.props.history;
+                      history.push('/register/' + response.data.result);
+                  }
+              });
+          }
+      } catch(e) {
+          alert(e.message);
+      } finally {
+          this.setState({ loading: false});
+      }
+  };
+
   onSignUp = async () => {
     this.setState({ loading: true});
     let send_data = {
@@ -126,51 +168,16 @@ class SignUp extends Component {
       email: this.state.email,
       phone_number: this.state.phone_number,
       password: this.state.password,
+      password_confirmation: this.state.password_confirmation,
     };
     try {
-      if (this.state.planValue > 0) {
-        send_data.membership = '1';
-        send_data.amount = this.amount;
-
-        if (this.state.isPaymentMethodPayPal) {
-          send_data.payment_method = 'paypal';
-          await myAPI.addUser(send_data).then(response => {
-            if (response.data.success === false)
-              this.setState({ signup_error: response.data.result });
-            else {
-              sessionStorage.setItem('user_id', response.data.result.user_id);
-              window.location.href = response.data.result.redirect_url;
-            }
-          });
-        }
-        else {
-          send_data.payment_method = 'card';
-          send_data.holder_name = this.state.holderName;
-          send_data.card_number = this.state.cardNumber;
-          send_data.expire_year = this.state.expireYear;
-          send_data.expire_month = this.state.expireMonth;
-          send_data.cvc_number = this.state.cvcNumber;
-          send_data.billing_country = this.state.billingCountry;
-          send_data.billing_address = this.state.billingAddress;
-          send_data.billing_city = this.state.billingCity;
-          send_data.billing_post_code = this.state.billingPostCode;
-          await myAPI.addUser(send_data).then(response => {
-            if (response.data.success === false)
-              this.setState({ signup_error: response.data.result });
-            else
-              this.setState({signup_ok: true});
-          });
-        }
-      }
-      else {
         send_data.membership = '0';
         await myAPI.addUser(send_data).then(response => {
-          if (response.data.success === false)
-            this.setState({ signup_error: response.data.result });
-          else
-            this.setState({signup_ok: true});
+            if (response.data.success === false)
+                this.setState({ signup_error: response.data.result });
+            else
+                this.setState({signup_ok: true});
         });
-      }
 
 
     } catch(err) {
@@ -200,7 +207,6 @@ class SignUp extends Component {
               <Link to="/" className="site-logo">
                 <img src={Logo} alt=""/>
               </Link>
-              <h4 className="moto-tag">Restaurant in Israel</h4>
             </Container>
           </div>
         </div>
@@ -221,6 +227,7 @@ class SignUp extends Component {
           </div>
           }
 
+
           {this.state.signup_ok ?
           <Container>
             <div className="row mb-5">
@@ -238,17 +245,24 @@ class SignUp extends Component {
           !this.state.isPlanSelected ?
             <Container>
               <div className="row mb-5">
-                <div className="col-lg-10 mx-auto">
+                <div className="col-lg-9 mx-auto">
+                    <Row>
+                        <Col className="text-center" style={{padding: '30px 0px 50px'}}>
+                            <h1 >Membership for SIXMENU</h1>
+                        </Col>
+                    </Row>
                   <Row>
-                    <Col md={4}>
+                    <Col md={1} />
+                    <Col md={5}>
                       <PricingTable
-                        plan="Basic"
+                        plan="Freemium"
                         price={0}
                         planPeriod="Month"
                         handleSelectPlan={this.handleSelectPlan}
                         featureList={this.state.basicPlan}/>
                     </Col>
-                    <Col md={4}>
+                    <Col md={5}>
+                      <div className="best-value">BEST VALUE</div>
                       <PricingTable
                         plan="Premium"
                         price={49.00}
@@ -257,21 +271,22 @@ class SignUp extends Component {
                         isFeatured={true}
                         featureList={this.state.premiumPlan}/>
                     </Col>
-                    <Col md={4}>
-                      <PricingTable
-                        plan="Diamond"
-                        price={69.00}
-                        planPeriod="Month"
-                        handleSelectPlan={this.handleSelectPlan}
-                        featureList={this.state.diamondPlan}/>
-                    </Col>
+                    <Col md={1} />
+                    {/*<Col md={4}>*/}
+                    {/*  <PricingTable*/}
+                    {/*    plan="Diamond"*/}
+                    {/*    price={69.00}*/}
+                    {/*    planPeriod="Month"*/}
+                    {/*    handleSelectPlan={this.handleSelectPlan}*/}
+                    {/*    featureList={this.state.diamondPlan}/>*/}
+                    {/*</Col>*/}
                   </Row>
                 </div>
               </div>
 
               <div className="mb-5">
                 <div className="row">
-                  <div className="col-lg-5 col-md-6 mx-auto">
+                  <div className="col-lg-6 col-md-6 mx-auto text-center">
                     <h3 className="mb-4">All plans also include these benefits:</h3>
 
                     <ul className="info-item">
@@ -315,220 +330,247 @@ class SignUp extends Component {
               </div>
             </Container>
             :
-            <Container>
-              <div className="row mb-4">
-                <div className="col-lg-8 mx-auto">
-                  <h4>Restaurant Details</h4>
-                  <Row>
-                    <Col md="6">
-                      <div className="form-group">
-                        <label htmlFor="restaurantNameEnglish" className="sr-only">Restaurant Name in English</label>
-                        <input type="text" id="restaurantNameEnglish" className="form-control"
-                               placeholder="Restaurant Name in English" value={this.state.nameEn} onChange={e => this.setState({nameEn: e.target.value})} required />
+              this.state.planValue > 0 ?
+                  <Container>
+                      <div className="row mb-4">
+                          <div className="col-lg-8 mx-auto">
+
+                              <div className="payment-info mt-4">
+                                  <h4>Payment</h4>
+                                  <p>Choose payment method below</p>
+
+                                  <div className="payment-types">
+                                      <Row>
+                                          <Col md="6">
+                                              <label htmlFor="paymentStripe" className="payment-type">
+                                                  <input type="radio" name="paymentType" defaultChecked onChange={() => this.handleChangePaymentMethod('stripe')} id="paymentStripe"/>
+                                                  <span className="payment-type-text">
+                                                  <span>
+                                                    <img src={mastercard} alt="Mastercard"/>
+                                                    <img src={visa} alt="Visa"/>
+                                                  </span>
+                                                </span>
+                                              </label>
+                                          </Col>
+                                          <Col md="6">
+                                              <label htmlFor="paymentPayment" className="payment-type">
+                                                  <input type="radio" name="paymentType" onChange={() => this.handleChangePaymentMethod('PayPal')} id="paymentPayment"/>
+                                                  <span className="payment-type-text">
+                                                      <span><img src={PayPal} alt="PayPal"/></span>
+                                                  </span>
+                                              </label>
+                                          </Col>
+                                      </Row>
+                                  </div>
+
+                                  {!this.state.isPaymentMethodPayPal &&
+                                  <div className="mb-3">
+                                      <Row>
+                                          <Col md="6">
+                                              <div className="form-group">
+                                                  <label htmlFor="cardholderName" className="sr-only">Cardholder Name</label>
+                                                  <input type="text" id="cardholderName" className="form-control" placeholder="Cardholder Name" value={this.state.holderName} onChange={e => this.setState({holderName: e.target.value})} />
+                                              </div>
+                                          </Col>
+
+                                          <Col md="6">
+                                              <div className="form-group">
+                                                  <label htmlFor="cardNumber" className="sr-only">Card Number</label>
+                                                  <input type="number" id="cardNumber" className="form-control" placeholder="Card Number" value={this.state.cardNumber} onChange={e => this.setState( {cardNumber: e.target.value })}/>
+                                              </div>
+                                          </Col>
+                                      </Row>
+                                      <Row>
+                                          <Col md="4">
+                                              <div className="form-group">
+                                                  <label htmlFor="expireMonth" className="sr-only">Expire Month</label>
+                                                  <select name="expire_Month" id="expireMonth" className="form-control" defaultValue={this.this_month} onChange={e => this.setState({expireMonth: e.target.value} )}>
+                                                      <option value="">--Expire Month--</option>
+                                                      <option value="01">Jan</option>
+                                                      <option value="02">Feb</option>
+                                                      <option value="03">Mar</option>
+                                                      <option value="04">Apr</option>
+                                                      <option value="05">May</option>
+                                                      <option value="06">Jun</option>
+                                                      <option value="07">July</option>
+                                                      <option value="08">Aug</option>
+                                                      <option value="09">Sep</option>
+                                                      <option value="10">Oct</option>
+                                                      <option value="11">Nov</option>
+                                                      <option value="12">Dec</option>
+                                                  </select>
+                                              </div>
+                                          </Col>
+
+                                          <Col md="4">
+                                              <div className="form-group">
+                                                  <label htmlFor="expireYear" className="sr-only">Expire Year</label>
+                                                  <select name="expire_year" id="expireYear" className="form-control" defaultValue={this.this_year} onChange={e => this.setState({expireYear: e.target.value})}>
+                                                      <option value="">--Expire Year--</option>
+                                                      {
+                                                          this.year_array.map((year) => {
+                                                              return <option value={year} key={`expire_${year}`}>{year}</option>
+                                                          })
+                                                      }
+                                                  </select>
+                                              </div>
+                                          </Col>
+
+                                          <Col md="4">
+                                              <div className="form-group">
+                                                  <input type="number" minLength={3} maxLength={3} id="cvcNumber" className="form-control" placeholder="CVC Number" value={this.state.cvcNumber} onChange={e => this.setState({cvcNumber: e.target.value})}/>
+                                              </div>
+                                          </Col>
+                                      </Row>
+                                      <Row>
+                                          <Col md="3">
+                                              <div className="form-group">
+                                                  <select className="form-control " placeholder={`Country`} defaultValue={this.countryList[0]['code']} onChange={e => this.setState({ billingCountry: e.target.value})}>
+                                                      {
+                                                          this.countryList.map((country) => {
+                                                              return <option value={country['code']} key={`country_${country['code']}`}>{country['name']}</option>
+                                                          })
+                                                      }
+                                                  </select>
+                                              </div>
+                                          </Col>
+                                          <Col md="3">
+                                              <div className="form-group">
+                                                  <input className="form-control" placeholder="Address" type="text" required value={this.state.billingAddress} onChange={e => this.setState({ billingAddress: e.target.value})} />
+                                              </div>
+                                          </Col>
+                                          <Col md="3">
+                                              <div className="form-group">
+                                                  <input className="form-control" placeholder="City" type="text" required value={this.state.billingCity} onChange={e => this.setState( {billingCity: e.target.value} )} />
+                                              </div>
+                                          </Col>
+                                          <Col md="3">
+                                              <div className="form-group">
+                                                  <input className="form-control" placeholder="Post Code" type="number" required value={this.state.billingPostCode} onChange={e => this.setState({ billingPostCode: e.target.value})} />
+                                              </div>
+                                          </Col>
+                                      </Row>
+                                  </div>
+                                  }
+                              </div>
+                              <Row className="mt-4">
+                                  <Col sm={6}>
+                                      <Button variant="default"
+                                              onClick={() => this.handleGoBack()}
+                                              block><FiArrowLeft/> Back</Button>
+                                  </Col>
+                                  <Col sm={6}>
+                                      <Button variant="primary" block onClick={this.onPayNow}>Pay Now and Register</Button>
+                                  </Col>
+
+                              </Row>
+                          </div>
+
                       </div>
-                    </Col>
-                    <Col md="6">
-                      <div className="form-group">
-                        <label htmlFor="restaurantNameHebrew" className="sr-only">Restaurant Name in Hebrew</label>
-                        <input type="text" id="restaurantNameHebrew" className="form-control"
-                               placeholder="Restaurant Name in Hebrew" value={this.state.nameHb} onChange={e => this.setState({nameHb: e.target.value})}/>
+                  </Container>
+                      :
+                  <Container>
+                      <div className="row mb-4">
+                        <div className="col-lg-8 mx-auto">
+                        <h4>Restaurant Details</h4>
+                        <Row>
+                          <Col md="6">
+                            <div className="form-group">
+                              <label htmlFor="restaurantNameEnglish" className="sr-only">Restaurant Name in English</label>
+                              <input type="text" id="restaurantNameEnglish" className="form-control"
+                                     placeholder="Restaurant Name in English" value={this.state.nameEn} onChange={e => this.setState({nameEn: e.target.value})} required />
+                            </div>
+                          </Col>
+                          <Col md="6">
+                            <div className="form-group">
+                              <label htmlFor="restaurantNameHebrew" className="sr-only">Restaurant Name in Hebrew</label>
+                              <input type="text" id="restaurantNameHebrew" className="form-control"
+                                     placeholder="Restaurant Name in Hebrew" value={this.state.nameHb} onChange={e => this.setState({nameHb: e.target.value})}/>
+                            </div>
+                          </Col>
+
+                          <Col md="6">
+                            <div className="form-group">
+                              <label htmlFor="descInEnglish" className="sr-only">Description in English</label>
+                              <textarea id="descInEnglish" className="form-control" placeholder="Description in English" value={this.state.descriptionEn}
+                                        onChange={e => this.setState({descriptionEn: e.target.value})} />
+                            </div>
+                          </Col>
+                          <Col md="6">
+                            <div className="form-group">
+                              <label htmlFor="descInHebrew" className="sr-only">Description in Hebrew</label>
+                              <textarea id="descInHebrew" className="form-control" placeholder="Description in Hebrew" value={this.state.descriptionHb}
+                                        onChange={e => this.setState({descriptionHb: e.target.value})} />
+                            </div>
+                          </Col>
+                          <Col md="6">
+                            <div className="form-group">
+                              <label htmlFor="addressEnglish" className="sr-only">Address in English</label>
+                              <input type="text" id="addressEnglish" className="form-control"
+                                     placeholder="Address in English" value={this.state.addressEn} onChange={e => this.setState({addressEn: e.target.value})}/>
+                            </div>
+                          </Col>
+                          <Col md="6">
+                            <div className="form-group">
+                              <label htmlFor="addressHebrew" className="sr-only">Address in Hebrew</label>
+                              <input type="text" id="addressHebrew" className="form-control"
+                                     placeholder="Address in Hebrew" value={this.state.addressHb} onChange={e => this.setState({addressHb: e.target.value})}/>
+                            </div>
+                          </Col>
+                        </Row>
+
+                        <div className="form-group">
+                          <GoogleMaps locationValue={this.state.location}  onChangeLocation={ this.handleChangeLocation }/>
+                        </div>
+
+                        <div className="form-group">
+                          <ImageUploader
+                            withIcon={true}
+                            withPreview={true}
+                            singleImage={false}
+                            buttonText='Choose images'
+                            // onChange={(pic) => this.handleOnDrop(pic)}
+                            imgExtension={['.jpg', '.gif', '.png', '.gif']}
+                            maxFileSize={5242880}
+                            onChange={this.handleImageUpload}
+                          />
+                        </div>
+
+                        {this.state.signup_error !== '' && <Alert color="danger" isOpen={true} toggle={this.onDismiss}>{this.state.signup_error}</Alert> }
+
+                        <div className="form-group">
+                          <label htmlFor="email" className="sr-only">Email</label>
+                          <input type="email" id="email" className="form-control" placeholder="Email" value={this.state.email} onChange={e => this.setState({email: e.target.value})} />
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="phoneNo" className="sr-only">Phone</label>
+                          <input type="text" id="phoneNo" className="form-control" placeholder="Phone no." value={this.state.phone_number} onChange={e => this.setState({phone_number: e.target.value})}/>
+                        </div>
+
+                        <div className="form-group">
+                          <label htmlFor="password" className="sr-only">Password</label>
+                          <input type="password" id="password" className="form-control" placeholder="Password" value={this.state.password} onChange={e => this.setState({ password: e.target.value})}/>
+                        </div>
+                        <div className="form-group">
+                          <label htmlFor="password" className="sr-only">Confirm Password</label>
+                          <input type="password" id="password_confirmation" className="form-control" placeholder="Confirm Password" value={this.state.password_confirmation} onChange={e => this.setState({ password_confirmation: e.target.value})}/>
+                        </div>
+                          <Row className="mt-4">
+                              <Col sm={6}>
+                                  <Button variant="default"
+                                          onClick={() => this.handleGoBack()}
+                                          block><FiArrowLeft/> Back</Button>
+                              </Col>
+                              <Col sm={6}>
+                                  <Button variant="primary" block onClick={this.onSignUp}>SignUp</Button>
+                              </Col>
+                          </Row>
                       </div>
-                    </Col>
-
-                    <Col md="6">
-                      <div className="form-group">
-                        <label htmlFor="descInEnglish" className="sr-only">Description in English</label>
-                        <textarea id="descInEnglish" className="form-control" placeholder="Description in English" value={this.state.descriptionEn}
-                                  onChange={e => this.setState({descriptionEn: e.target.value})} />
                       </div>
-                    </Col>
-                    <Col md="6">
-                      <div className="form-group">
-                        <label htmlFor="descInHebrew" className="sr-only">Description in Hebrew</label>
-                        <textarea id="descInHebrew" className="form-control" placeholder="Description in Hebrew" value={this.state.descriptionHb}
-                                  onChange={e => this.setState({descriptionHb: e.target.value})} />
-                      </div>
-                    </Col>
-                    <Col md="6">
-                      <div className="form-group">
-                        <label htmlFor="addressEnglish" className="sr-only">Address in English</label>
-                        <input type="text" id="addressEnglish" className="form-control"
-                               placeholder="Address in English" value={this.state.addressEn} onChange={e => this.setState({addressEn: e.target.value})}/>
-                      </div>
-                    </Col>
-                    <Col md="6">
-                      <div className="form-group">
-                        <label htmlFor="addressHebrew" className="sr-only">Address in Hebrew</label>
-                        <input type="text" id="addressHebrew" className="form-control"
-                               placeholder="Address in Hebrew" value={this.state.addressHb} onChange={e => this.setState({addressHb: e.target.value})}/>
-                      </div>
-                    </Col>
-                  </Row>
+                  </Container>
 
-                  <div className="form-group">
-                    <GoogleMaps locationValue={this.state.location}  onChangeLocation={ this.handleChangeLocation }/>
-                  </div>
 
-                  <div className="form-group">
-                    <ImageUploader
-                      withIcon={true}
-                      withPreview={true}
-                      singleImage={false}
-                      buttonText='Choose images'
-                      // onChange={(pic) => this.handleOnDrop(pic)}
-                      imgExtension={['.jpg', '.gif', '.png', '.gif']}
-                      maxFileSize={5242880}
-                      onChange={this.handleImageUpload}
-                    />
-                  </div>
-
-                  {this.state.signup_error !== '' && <Alert color="danger" isOpen={true} toggle={this.onDismiss}>{this.state.signup_error}</Alert> }
-
-                  <div className="form-group">
-                    <label htmlFor="email" className="sr-only">Email</label>
-                    <input type="email" id="email" className="form-control" placeholder="Email" value={this.state.email} onChange={e => this.setState({email: e.target.value})} />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="phoneNo" className="sr-only">Phone</label>
-                    <input type="text" id="phoneNo" className="form-control" placeholder="Phone no." value={this.state.phone_number} onChange={e => this.setState({phone_number: e.target.value})}/>
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="password" className="sr-only">Password</label>
-                    <input type="password" id="password" className="form-control" placeholder="Password" value={this.state.password} onChange={e => this.setState({ password: e.target.value})}/>
-                  </div>
-
-                  {this.state.planValue > 0 &&
-                  <div className="payment-info mt-4">
-                    <h4>Payment</h4>
-                    <p>Choose payment method below</p>
-
-                    <div className="payment-types">
-                      <label htmlFor="paymentStripe" className="payment-type">
-                        <input type="radio" name="paymentType" defaultChecked onChange={() => this.handleChangePaymentMethod('stripe')} id="paymentStripe"/>
-                        <span className="payment-type-text">
-                          <span>
-                            <img src={mastercard} alt="Mastercard"/>
-                            <img src={visa} alt="Visa"/>
-                          </span>
-                        </span>
-                      </label>
-
-                      <label htmlFor="paymentPayment" className="payment-type">
-                        <input type="radio" name="paymentType" onChange={() => this.handleChangePaymentMethod('PayPal')} id="paymentPayment"/>
-                        <span className="payment-type-text">
-                          <span><img src={PayPal} alt="PayPal"/></span>
-                        </span>
-                      </label>
-                    </div>
-
-                    {!this.state.isPaymentMethodPayPal &&
-                    <div className="mb-3">
-                      <Row>
-                        <Col md="6">
-                          <div className="form-group">
-                            <label htmlFor="cardholderName" className="sr-only">Cardholder Name</label>
-                            <input type="text" id="cardholderName" className="form-control" placeholder="Cardholder Name" value={this.state.holderName} onChange={e => this.setState({holderName: e.target.value})} />
-                          </div>
-                        </Col>
-
-                        <Col md="6">
-                          <div className="form-group">
-                            <label htmlFor="cardNumber" className="sr-only">Card Number</label>
-                            <input type="number" id="cardNumber" className="form-control" placeholder="Card Number" value={this.state.cardNumber} onChange={e => this.setState( {cardNumber: e.target.value })}/>
-                          </div>
-                        </Col>
-                      </Row>
-
-                      <Row>
-                        <Col md="4">
-                          <div className="form-group">
-                            <label htmlFor="expireMonth" className="sr-only">Expire Month</label>
-                            <select name="expire_Month" id="expireMonth" className="form-control" defaultValue={this.this_month} onChange={e => this.setState({expireMonth: e.target.value} )}>
-                              <option value="">--Expire Month--</option>
-                              <option value="01">Jan</option>
-                              <option value="02">Feb</option>
-                              <option value="03">Mar</option>
-                              <option value="04">Apr</option>
-                              <option value="05">May</option>
-                              <option value="06">Jun</option>
-                              <option value="07">July</option>
-                              <option value="08">Aug</option>
-                              <option value="09">Sep</option>
-                              <option value="10">Oct</option>
-                              <option value="11">Nov</option>
-                              <option value="12">Dec</option>
-                            </select>
-                          </div>
-                        </Col>
-
-                        <Col md="4">
-                          <div className="form-group">
-                            <label htmlFor="expireYear" className="sr-only">Expire Year</label>
-                            <select name="expire_year" id="expireYear" className="form-control" defaultValue={this.this_year} onChange={e => this.setState({expireYear: e.target.value})}>
-                              <option value="">--Expire Year--</option>
-                              {
-                                this.year_array.map((year) => {
-                                  return <option value={year} key={`expire_${year}`}>{year}</option>
-                                })
-                              }
-                            </select>
-                          </div>
-                        </Col>
-
-                        <Col md="4">
-                          <div className="form-group">
-                            <input type="number" minLength={3} maxLength={3} id="cvcNumber" className="form-control" placeholder="CVC Number" value={this.state.cvcNumber} onChange={e => this.setState({cvcNumber: e.target.value})}/>
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col md="3">
-                          <div className="form-group">
-                            <select className="form-control " placeholder={`Country`} defaultValue={this.countryList[0]['code']} onChange={e => this.setState({ billingCountry: e.target.value})}>
-                              {
-                                this.countryList.map((country) => {
-                                  return <option value={country['code']} key={`country_${country['code']}`}>{country['name']}</option>
-                                })
-                              }
-                            </select>
-                          </div>
-                        </Col>
-                        <Col md="3">
-                          <div className="form-group">
-                            <input className="form-control" placeholder="Address" type="text" required value={this.state.billingAddress} onChange={e => this.setState({ billingAddress: e.target.value})} />
-                          </div>
-                        </Col>
-                        <Col md="3">
-                          <div className="form-group">
-                            <input className="form-control" placeholder="City" type="text" required value={this.state.billingCity} onChange={e => this.setState( {billingCity: e.target.value} )} />
-                          </div>
-                        </Col>
-                        <Col md="3">
-                          <div className="form-group">
-                            <input className="form-control" placeholder="Post Code" type="number" required value={this.state.billingPostCode} onChange={e => this.setState({ billingPostCode: e.target.value})} />
-                          </div>
-                        </Col>
-                      </Row>
-                    </div>
-                    }
-                  </div>
-                  }
-
-                  <Row className="mt-4">
-                    <Col sm={6}>
-                      <Button variant="default"
-                              onClick={() => this.handleGoBack()}
-                              block><FiArrowLeft/> Back</Button>
-                    </Col>
-                    <Col sm={6}>
-                      <Button variant="primary" block onClick={this.onSignUp}>Sign Up</Button>
-                    </Col>
-                  </Row>
-                </div>
-              </div>
-            </Container>
           }
 
         </div>

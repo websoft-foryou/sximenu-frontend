@@ -16,6 +16,7 @@ import ProductListing from "./view/ProductListing";
 import AboutUs from "./view/AboutUs";
 import SignUp from "./view/SignUp";
 import Admin from "./admin/index";
+import Register from "./view/Register";
 import EmailVerification from "./view/EmailVerificatoin";
 import PaymentSuccess from "./view/PaymentSuccess";
 import AuthService from "./admin/auth/auth_service";
@@ -34,8 +35,8 @@ ReactDOM.render(<Provider store={store}>
       <Route path="/restaurant/:id" exact children={<MenuResult/>} />
       <Route path="/restaurant/:id/:id" children={<ProductListing/>} />
 
-      <Route path="/signup" children={<SignUp success="none" />} />
-      <Route path="/signup/:success" children={<SignUp success="true" /> } />
+      <Route path="/signup" component={SignUp} />
+      <Route path="/register/:user_id" component={Register} />
       <Route path="/admin" component={Admin} />
       <Route path="/email-activate/:token" children={<EmailVerification verifyType="newverify" />} />
       <Route path="/email-reactivate/:token" children={<EmailVerification verifyType="reverify" />} />

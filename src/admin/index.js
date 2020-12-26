@@ -94,6 +94,7 @@ const Admin = () => {
                             }
 
                             <PublicRoute path="/admin/*">404 | Not found</PublicRoute>
+
                         </Switch>
                     </ScrollContext>
                 </BrowserRouter>

@@ -214,7 +214,7 @@ class Category extends Component {
                                 <div className="card-body">
 
                                     <div className="row">
-                                        <div className="col-6 col-sm-4 col-md-3 col-lg-2" key={`category_box_0`}>
+                                        <div className="col-12 col-sm-6 col-md-4 col-lg-2" key={`category_box_0`}>
                                             <div className="card category-box">
                                                 <div className="card-body category-body">
                                                     <img key={`category_image_add`}  src={NewCategoryImage} alt="Category" />
@@ -236,7 +236,7 @@ class Category extends Component {
                                         {
                                             this.state.table_data.map((item, i) =>
 
-                                                <div className="col-6 col-sm-4 col-md-3 col-lg-2" key={`category_box_${item.category_id}`}>
+                                                <div className="col-12 col-sm-6 col-md-4 col-lg-2" key={`category_box_${item.category_id}`}>
                                                     <div className="card category-box">
                                                         <div className="card-body category-body">
                                                             <img src={item.image}  />

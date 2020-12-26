@@ -64,7 +64,7 @@ const PasswordSetting = (props) => {
             }
             <div className="container-fluid">
                 <div className="row">
-                    <div className="col-6">
+                    <div className="col-12 col-lg-6">
                         <div className="card">
                             <div className="card-header">
                                 <h5 className="float-left">Password Setting</h5>

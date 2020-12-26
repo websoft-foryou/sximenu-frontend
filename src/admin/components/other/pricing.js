@@ -30,7 +30,7 @@ const Pricing = (props) => {
     const [loading, setLoading] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
-    const amount = 69.00;
+    const amount = 49.00;
     const this_year = new Date().getFullYear();
     const this_month = new Date().getMonth() + 1;
     const countryList = [ { name: 'ISRAEL', code: 'IL'}, { name: 'RUSSIA', code: 'RU'}, {name: 'ALBANIA', code: 'AL'}] // https://developer.paypal.com/docs/api/reference/country-codes/
@@ -184,7 +184,7 @@ const Pricing = (props) => {
                             </div>
                             <div className="card-body pricing-card-design-3">
                                 <div className="row pricing-content-ribbons ">
-                                    <div className="col-6 col-lg-3">
+                                    <div className="col-12 col-md-6 col-lg-3">
                                         <PricingTable
                                             plan="Freemium"
                                             price={0}
@@ -194,7 +194,8 @@ const Pricing = (props) => {
                                             isPurchased={isFreemium}
                                             featureList={freemiumPlan} />
                                     </div>
-                                    <div className="col-6 col-lg-3">
+                                    <div className="col-12 col-md-6 col-lg-3">
+                                        <div className="best-value">BEST VALUE</div>
                                         <PricingTable
                                             plan="Premium"
                                             price={amount}

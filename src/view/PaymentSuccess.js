@@ -47,7 +47,7 @@ const PaymentSuccess = (props) => {
             }, payment_token).then(response => {
                 setLoading(false);
                 if (response.data.success) {
-                    history.push('/signup/success');
+                    history.push('/register/' + response.data.result);
                 }
                 else
                     toast.error(response.data.result);
